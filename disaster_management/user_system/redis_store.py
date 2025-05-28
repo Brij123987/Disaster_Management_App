@@ -27,5 +27,5 @@ class RedisUserData:
     def get_all_user_data(self):
         # Get all user data from Redis
         all_user_data = self.redis_client.keys('*')
-
+        
 
