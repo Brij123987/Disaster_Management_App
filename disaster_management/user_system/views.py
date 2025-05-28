@@ -34,9 +34,11 @@ def get_user_data(request, user_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except json.JSONDecodeError:
+        logger.error('Error decoding JSON')
         return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
     
     except Exception as e:
+        logger.error(f'Error getting user data: {e}')
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -57,4 +59,5 @@ def create_user_data(request):
             return Response({"message":"User Created Successfully"}, status=status.HTTP_201_CREATED)
 
     except Exception as e:
+        logger.error(f'Error creating user data: {e}')
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
