@@ -2,14 +2,59 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from user_system.serializers import RedisUserSerializer
+from user_system.redis_store import RedisUserData
 import json
 
+import uuid
+
+import logging
+import logging.config
+from django.conf import settings
+
+# Apply Django's logging config
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('custom_logger')
 
 # Create your views here.
 
 @api_view(['GET'])
 def get_user_data(request, user_id):
     try:
-        pass
+        redis_handler = RedisUserData()
+        user_data = redis_handler.get_user_data(user_id)
+
+        if user_data is None:
+            return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+        
+        data = json.loads(user_data)
+
+        serializer = RedisUserSerializer({"user_id":user_id, "data":data})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except json.JSONDecodeError:
+        return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
+    
     except Exception as e:
-        pass
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['POST'])
+def create_user_data(request):
+    try:
+        serializer = RedisUserSerializer(data=request.data)
+        print(serializer)
+
+        if serializer.is_valid():
+            user_id = str(uuid.uuid4())
+            print(user_id)
+            data = serializer.validated_data['data']
+
+            redis_handler = RedisUserData()
+            redis_handler.set_user_data(user_id, json.dumps(data))
+
+            return Response({"message":"User Created Successfully"}, status=status.HTTP_201_CREATED)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
