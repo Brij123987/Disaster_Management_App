@@ -36,13 +36,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "user_system",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "user_system",
     "rest_framework",
     "rest_framework_simplejwt",
 ]
@@ -206,3 +206,6 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME' : timedelta(minutes=30),
     'ACCESS_TOKEN_LIFETIME' : timedelta(minutes=30)
 }
+
+
+AUTH_USER_MODEL = 'user_system.CustomUser'

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from user_system.models import CustomUser
 from datetime import datetime
 
 class RedisUserSerializer(serializers.Serializer):
@@ -12,7 +13,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['username', 'first_name','last_name','email', 'password', 'confirm_password', 'last_login']
 
     def validate(self, data):
@@ -24,7 +25,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         password = validated_data.pop('password')
         validated_data.pop('confirm_password', None)
         validated_data['last_login'] = datetime.now()
-        user = User(**validated_data)
+        user = CustomUser(**validated_data)
         user.set_password(password)
         user.save()
         return user
