@@ -19,8 +19,10 @@ logger = logging.getLogger('custom_logger')
 # Create your views here.
 
 @api_view(['GET'])
-def get_user_data(request, user_id):
+def get_user_data(request):
     try:
+        user_id = request.query_params.get('user_id')
+    
         redis_handler = RedisUserData()
         user_data = redis_handler.get_user_data(user_id)
 
@@ -45,18 +47,20 @@ def get_user_data(request, user_id):
 @api_view(['POST'])
 def create_user_data(request):
     try:
-        serializer = RedisUserSerializer(data=request.data)
-        print(serializer)
+        user_id = str(uuid.uuid4())
+        data = request.data.copy()
+        data['user_id'] = user_id
+        serializer = RedisUserSerializer(data=data)
 
-        if serializer.is_valid():
-            user_id = str(uuid.uuid4())
-            print(user_id)
-            data = serializer.validated_data['data']
+        if serializer.is_valid(): 
+            user_data = serializer.validated_data['data']
 
             redis_handler = RedisUserData()
-            redis_handler.set_user_data(user_id, json.dumps(data))
+            redis_handler.set_user_data(user_id, json.dumps(user_data))
 
-            return Response({"message":"User Created Successfully"}, status=status.HTTP_201_CREATED)
+            return Response({"message":"User Created Successfully", "user_id":user_id}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
 
     except Exception as e:
         logger.error(f'Error creating user data: {e}')

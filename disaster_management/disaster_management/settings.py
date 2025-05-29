@@ -127,23 +127,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # settings.py
 
+import logging
 import os
 from datetime import datetime, timedelta
 
-LOG_DIR = os.path.join(BASE_DIR, "error_logs")
+# Logging directory
+LOG_DIR = os.path.join(os.path.dirname(__file__), "error_logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
+# File naming by date
 today = datetime.now().strftime("%Y-%m-%d")
 yesterday = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%d")
 log_filename = os.path.join(LOG_DIR, f"{today}.log")
 
-# Clean old logs (run only once during startup — not best in settings.py)
+# Clean up old log files (keep only today and yesterday)
 for filename in os.listdir(LOG_DIR):
     if filename.endswith(".log") and not (
         filename.startswith(today) or filename.startswith(yesterday)
     ):
         os.remove(os.path.join(LOG_DIR, filename))
 
+# Logger config
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,

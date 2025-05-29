@@ -9,7 +9,7 @@ redis_host = os.getenv('REDIS_HOST')
 
 class RedisUserData:
 
-    def __init__(self, host=redis_host):
+    def __init__(self, host='127.0.0.1'):
         self.redis_client = redis.Redis(host=host, port=6379, db=0)
 
     def get_user_data(self, user_id):
@@ -19,7 +19,10 @@ class RedisUserData:
 
     def set_user_data(self, user_id, data):
         # Set user data in Redis
+        print("Test")
         self.redis_client.set(user_id, data)
+        print("Test1")
+        
 
     def delete_user_data(self, user_id):
         # Delete user data from Redis
