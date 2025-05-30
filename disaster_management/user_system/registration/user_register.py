@@ -34,8 +34,9 @@ def create_user(request):
 @api_view(['GET'])
 def user_login(request):
     try:
-        username = request.query_params.get('username')
-        password = request.query_params.get('password')
+        username = request.data.get('username')
+        password = request.data.get('password')
+        print(username, password)
 
         user = authenticate(request, username=username, password=password)
 
