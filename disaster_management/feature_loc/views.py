@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from feature_loc.helpers.get_user_locations import get_location_coordinates
+from feature_loc.helpers.earthquake_data_write import write_earthquake_data_to_csv
 import requests
 import os
 
@@ -34,6 +35,7 @@ def get_location_earthquake_historical_data(request):
         urls = EARTHQUAKE_HISTORICAL_DATA
 
         lat, lon = get_location_coordinates(location)
+        print(lat, lon)
 
         if not lat or not lon:
             return Response({'error': 'Unable to get location'}, status=status.HTTP_400_BAD_REQUEST)
@@ -57,10 +59,17 @@ def get_location_earthquake_historical_data(request):
         if not data or not data['features']:
             return Response({'error': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
         
+
+
         for feature in data['features'][:5]:
             props = feature['properties']
             coords = feature['geometry']['coordinates']
-         
+
+            csv_data = write_earthquake_data_to_csv(location, props, coords)
+
+            if not csv_data:
+                return Response({'error': 'Unable to write data to csv'}, status=status.HTTP_400_BAD_REQUEST)
+
         response_data = {
             'location': location,
             'latitude': lat,
