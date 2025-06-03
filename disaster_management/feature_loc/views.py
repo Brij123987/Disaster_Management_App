@@ -7,6 +7,8 @@ from feature_loc.helpers.earthquake_data_write import write_earthquake_data_to_c
 import requests
 import os
 
+from mlmodel_earthquake.training_model import load_model
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -70,12 +72,19 @@ def get_location_earthquake_historical_data(request):
             if not csv_data:
                 return Response({'error': 'Unable to write data to csv'}, status=status.HTTP_400_BAD_REQUEST)
 
+        data_send = [[props['mag'], coords[2], coords[1], coords[0]]]
+        predicted_data = load_model(data_send)
+
+        if not predicted_data:
+            return Response({'error': 'Unable to predict data'}, status=status.HTTP_400_BAD_REQUEST)
+
         response_data = {
             'location': location,
             'latitude': lat,
             'longitude': lon,
             'Magnitude' : props['mag'],
-            'coords': coords
+            'coords': coords,
+            'predicted_data': predicted_data
         }
 
         return Response({'data':response_data}, status=status.HTTP_200_OK)

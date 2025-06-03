@@ -61,7 +61,7 @@ def write_earthquake_data_to_csv(location, prop, coord):
         event_time = event_time.strftime('%Y-%m-%d %H:%M:%S')
 
         aftershock_risk = estimate_aftershock_risk(prop['mag'], coord[2], event_time)
-        print(f"------------------100: {aftershock_risk}")
+        # print(f"------------------100: {aftershock_risk}")
 
         if not aftershock_risk:
             return 'N/A'
