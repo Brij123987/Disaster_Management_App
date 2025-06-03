@@ -23,7 +23,7 @@ BASE_DIR = os.getenv('BASE_DIR')
 def model_processing():
     try:
         # EarthQuake DataSet
-        file_path = f"california_earthquake_data.csv"
+        file_path = f"indonesia_earthquake_data.csv"
         full_path = os.path.join(BASE_DIR, file_path)
 
         df = pd.read_csv(full_path)
