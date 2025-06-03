@@ -47,8 +47,8 @@ def get_location_earthquake_historical_data(request):
             'latitude': lat,
             'longitude': lon,
             'maxradiuskm': 1000,
-            'starttime': '2025-01-01',
-            'endtime': '2025-01-02',
+            'starttime': '2025-05-01',
+            'endtime': '2025-05-31',
         }
 
         response = requests.get(urls, params=params)
@@ -63,7 +63,7 @@ def get_location_earthquake_historical_data(request):
         
 
 
-        for feature in data['features'][:5]:
+        for feature in data['features']:
             props = feature['properties']
             coords = feature['geometry']['coordinates']
 
