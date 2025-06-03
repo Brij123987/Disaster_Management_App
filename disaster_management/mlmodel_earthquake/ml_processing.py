@@ -38,7 +38,7 @@ def model_processing():
         # Feature Selection
         X = df[['Magnitude','Depth','Latitude','Longitude']]
         y = df['AfterShock_Risk']
-        
+
         # Scaling Features
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
@@ -46,7 +46,7 @@ def model_processing():
         # Split
         X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2)
 
-        return X_train, X_test, y_train, y_test
+        return X_train, X_test, y_train, y_test, scaler
     
     except Exception as e:
         logger.error(f"Error in model processing: {str(e)}")
