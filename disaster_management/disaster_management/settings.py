@@ -38,6 +38,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "user_system",
     "feature_loc",
+    "mlmodel_earthquake",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
