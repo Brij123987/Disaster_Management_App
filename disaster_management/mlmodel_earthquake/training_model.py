@@ -7,6 +7,7 @@ import joblib
 import numpy as np
 import os
 
+from mlmodel_earthquake.helpers.calculate_time_difference_helpers import get_time_since_last_earthquake
 from mlmodel_earthquake.helpers.get_boundary_plate import updated_csv
 
 import logging
@@ -152,6 +153,11 @@ def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, event
         model: RandomForestRegressor = joblib.load(PREDICT_MODEL_PATH)
         model_time: RandomForestRegressor = joblib.load(PREDICT_MODEL_TIME_PATH)
 
+        # time_since_last = get_time_since_last_earthquake(event_time, long, lat, loc)
+
+        # if not time_since_last:
+        #     logger.error("Time since last earthquake is not available")
+
         input_data = [[magnitude, depth, event_time, plate_distance]]
        
         predicted_magnitude = model.predict(input_data)
@@ -163,7 +169,7 @@ def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, event
 
         return {
             "PredictedMagnitude": round(predicted_magnitude[0], 1),
-            "ExpectedInHours": round(predicted_time[0], 1)
+            "ExpectedInHours": abs(round(predicted_time[0], 1))
         }
     
     except Exception as e:
