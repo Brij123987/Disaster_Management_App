@@ -73,7 +73,7 @@ def get_location_earthquake_historical_data(request):
                 return Response({'error': 'Unable to write data to csv'}, status=status.HTTP_400_BAD_REQUEST)
 
         data_send = [[props['mag'], coords[2], coords[1], coords[0]]]
-        predicted_data = load_model(data_send)
+        predicted_data = load_model(data_send, location)
 
         predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(input_data=None)
 
