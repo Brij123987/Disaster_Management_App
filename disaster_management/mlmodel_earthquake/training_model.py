@@ -89,6 +89,8 @@ def train_model_predict_next_eartquake():
         # Load data from DataFrame
         df = updated_csv()
 
+        df = df.dropna(subset=['MagnitudeShifted'])
+
         X = df[['Magnitude', 'Depth', 'TimeSeriesLast', 'PlateDistance']]
         y = df['MagnitudeShifted']
 
@@ -110,7 +112,7 @@ def train_model_predict_next_eartquake():
         return None
     
 
-def train_model_predict_next_eartquake_with_custom_model(input_data):
+def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, time_series_last, plate_distance):
     try:
         res = train_model_predict_next_eartquake()
 
@@ -120,7 +122,8 @@ def train_model_predict_next_eartquake_with_custom_model(input_data):
         
         model: RandomForestRegressor = joblib.load(PREDICT_MODEL_PATH)
 
-        input_data = [[5.2, 60.0, 24.5, 10.0]]  # Magnitude, Depth, HoursSinceLast, PlateDistance (km)
+        input_data = [[magnitude, depth, time_series_last, plate_distance]]
+        # input_data = [[5.2, 60.0, 24.5, 10.0]]  # Magnitude, Depth, HoursSinceLast, PlateDistance (km)
         predicted_magnitude = model.predict(input_data)
 
         print(f"--------------100: {predicted_magnitude[0]:.1f}")

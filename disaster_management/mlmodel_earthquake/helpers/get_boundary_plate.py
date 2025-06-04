@@ -36,8 +36,7 @@ def get_boundary_plate_distance(long, lat):
 
         # Calculate distance to nearest boundary
         min_distance = boundaries.distance(point_gdf[0]).min()
-        print(min_distance)
-
+        
         return min_distance
 
     except Exception as e:
@@ -51,7 +50,6 @@ def updated_csv():
         full_path = os.path.join(BASE_DIR, file_path)
 
         df = pd.read_csv(full_path)
-        print(f"-------------df__1: ")
 
         df['DateTime'] = pd.to_datetime(df['DateTime'])
         df = df.sort_values(by='DateTime')
@@ -64,8 +62,6 @@ def updated_csv():
         plate_dist = get_boundary_plate_distance("41.5972", "2.2943")
 
         df['PlateDistance'] = plate_dist
-
-        print(f"-------------df_data: {df.head()}")
 
         return df
 

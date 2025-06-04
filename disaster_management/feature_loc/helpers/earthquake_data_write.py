@@ -45,6 +45,18 @@ def estimate_aftershock_risk(magnitude, depth_km, event_time):
         return None
 
 
+def convert_even_time_to_datetime(Event_time):
+    try:
+        # Convert Event time to datetime format
+        event_time = datetime.fromtimestamp(Event_time / 1000.0)
+        event_time = event_time.strftime('%Y-%m-%d %H:%M:%S')
+
+        return event_time
+  
+    except Exception as e:
+        logger.error(f"Error in convert_even_time_to_datetime: {str(e)}")
+        return None
+
 
 
 def write_earthquake_data_to_csv(location, prop, coord):
@@ -56,9 +68,11 @@ def write_earthquake_data_to_csv(location, prop, coord):
         file_exists = os.path.isfile(file_path)
         file_empty = not file_exists or os.stat(file_path).st_size == 0
 
-        # Convert Event time to datetime format
-        event_time = datetime.fromtimestamp(prop['time'] / 1000.0)
-        event_time = event_time.strftime('%Y-%m-%d %H:%M:%S')
+        event_time = convert_even_time_to_datetime(prop['time'])
+
+        if not event_time:
+            logger.error(f"Error in write_earthquake_data_to_csv: {str(e)}")
+            return None
 
         aftershock_risk = estimate_aftershock_risk(prop['mag'], coord[2], event_time)
         # print(f"------------------100: {aftershock_risk}")
