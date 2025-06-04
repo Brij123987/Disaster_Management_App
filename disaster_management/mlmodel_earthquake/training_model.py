@@ -28,11 +28,11 @@ SCALER_PATH = os.path.join(BASE_DIR, "scaler.pkl")
 PREDICT_MODEL_PATH = os.path.join(BASE_DIR, "predict_model.pkl")
 
 
-def train_save_model():
+def train_save_model(location):
     try:
         model = RandomForestClassifier()
 
-        X_train, X_test, y_train, y_test, scaler = model_processing()
+        X_train, X_test, y_train, y_test, scaler = model_processing(location)
 
         if any(x is None for x in [X_train, X_test, y_train, y_test, scaler]):
             logger.error("Data is not available for training the model")
@@ -53,9 +53,9 @@ def train_save_model():
 
 
 
-def load_model(input_data):
+def load_model(input_data, location):
     try:
-        res = train_save_model()
+        res = train_save_model(location)
         if not res:
             logger.error("Model is not trained")
             return None

@@ -20,10 +20,10 @@ BASE_DIR = os.getenv('BASE_DIR')
 
 
 
-def model_processing():
+def model_processing(location):
     try:
         # EarthQuake DataSet
-        file_path = f"japan_earthquake_data.csv"
+        file_path = f"{location}_earthquake_data.csv"
         full_path = os.path.join(BASE_DIR, file_path)
 
         df = pd.read_csv(full_path)
