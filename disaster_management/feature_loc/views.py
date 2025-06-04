@@ -75,12 +75,12 @@ def get_location_earthquake_historical_data(request):
         data_send = [[props['mag'], coords[2], coords[1], coords[0]]]
         predicted_data = load_model(data_send, location)
 
-        plate_distance = get_boundary_plate_distance(coords[0], coords[1])
+        plate_distance = get_boundary_plate_distance(coords[0], coords[1]) / 1000
 
         if not plate_distance:
             return Response({'error': 'Unable to get plate distance'}, status=status.HTTP_400_BAD_REQUEST)
        
-        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(props['mag'], coords[2], props['time'], plate_distance)
+        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(props['mag'], coords[2], props['time'], plate_distance, coords[0], coords[1], location)
 
         if not predicted_data:
             return Response({'error': 'Unable to predict data'}, status=status.HTTP_400_BAD_REQUEST)

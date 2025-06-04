@@ -44,9 +44,9 @@ def get_boundary_plate_distance(long, lat):
         return None
     
 
-def updated_csv():
+def updated_csv(long, lat, loc):
     try:
-        file_path = f"japan_earthquake_data.csv"
+        file_path = f"{loc}_earthquake_data.csv"
         full_path = os.path.join(BASE_DIR, file_path)
 
         df = pd.read_csv(full_path)
@@ -54,12 +54,16 @@ def updated_csv():
         df['DateTime'] = pd.to_datetime(df['DateTime'])
         df = df.sort_values(by='DateTime')
 
+        df['TimeToNext'] = df['DateTime'].shift(-1) - df['DateTime']
+        df['TimeToNext'] = df['TimeToNext'].dt.total_seconds() / 3600
+
+
         df['TimeSeriesLast'] = df['DateTime'].diff().dt.total_seconds() / 3600
         df['MagnitudeRollingAvg'] = df['Magnitude'].rolling(window=5).mean()
 
         df['MagnitudeShifted'] = df['Magnitude'].shift(-1)
 
-        plate_dist = get_boundary_plate_distance("41.5972", "2.2943")
+        plate_dist = get_boundary_plate_distance(long, lat) / 1000
 
         df['PlateDistance'] = plate_dist
 

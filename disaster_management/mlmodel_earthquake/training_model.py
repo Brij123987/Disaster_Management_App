@@ -26,6 +26,7 @@ MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 SCALER_PATH = os.path.join(BASE_DIR, "scaler.pkl")
 
 PREDICT_MODEL_PATH = os.path.join(BASE_DIR, "predict_model.pkl")
+PREDICT_MODEL_TIME_PATH = os.path.join(BASE_DIR, "predict_model_time.pkl")
 
 
 def train_save_model(location):
@@ -84,10 +85,10 @@ def load_model(input_data, location):
         return None
 
 
-def train_model_predict_next_eartquake():
+def train_model_predict_next_eartquake(long, lat, loc):
     try:
         # Load data from DataFrame
-        df = updated_csv()
+        df = updated_csv(long, lat, loc)
 
         df = df.dropna(subset=['MagnitudeShifted'])
 
@@ -112,23 +113,58 @@ def train_model_predict_next_eartquake():
         return None
     
 
-def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, time_series_last, plate_distance):
+def train_model_predict_next_eartquake_time(long, lat, loc):
     try:
-        res = train_model_predict_next_eartquake()
+        df = updated_csv(long, lat, loc)
 
-        if not res:
+        df = df.dropna(subset=['TimeToNext'])
+
+        X = df[['Magnitude', 'Depth', 'TimeSeriesLast', 'PlateDistance']]
+        y = df['TimeToNext']
+
+        # Pipeline with scaling and regression
+        model_time = Pipeline([
+            ('scaler', StandardScaler()),
+            ('regressor', RandomForestRegressor())
+        ])
+
+        model_time.fit(X, y)
+
+        # Save Predicted Model
+        joblib.dump(model_time, PREDICT_MODEL_TIME_PATH)
+
+        return True
+
+    except Exception as e:
+        logger.error(f"train_model_predict_next_eartquake_time: {str(e)}")
+        return None
+    
+
+def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, event_time, plate_distance, long, lat, loc):
+    try:
+        res = train_model_predict_next_eartquake(long, lat, loc)
+        res_1 = train_model_predict_next_eartquake_time(long, lat, loc)
+
+        if not res or not res_1:
             logger.error("Predicted Model is not available")
             return None
         
         model: RandomForestRegressor = joblib.load(PREDICT_MODEL_PATH)
+        model_time: RandomForestRegressor = joblib.load(PREDICT_MODEL_TIME_PATH)
 
-        input_data = [[magnitude, depth, time_series_last, plate_distance]]
-        # input_data = [[5.2, 60.0, 24.5, 10.0]]  # Magnitude, Depth, HoursSinceLast, PlateDistance (km)
+        input_data = [[magnitude, depth, event_time, plate_distance]]
+       
         predicted_magnitude = model.predict(input_data)
+        predicted_time = model_time.predict(input_data)
+
+        print(f"-------150: {predicted_time}")
 
         print(f"--------------100: {predicted_magnitude[0]:.1f}")
 
-        return f"{predicted_magnitude[0]:.1f}"
+        return {
+            "PredictedMagnitude": round(predicted_magnitude[0], 1),
+            "ExpectedInHours": round(predicted_time[0], 1)
+        }
     
     except Exception as e:
         logger.error(f"train_model_predict_next_eartquake_with_custom_model: {str(e)}")
