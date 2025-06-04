@@ -3,11 +3,13 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from feature_loc.helpers.get_user_locations import get_location_coordinates
-from feature_loc.helpers.earthquake_data_write import write_earthquake_data_to_csv
+from feature_loc.helpers.earthquake_data_write import write_earthquake_data_to_csv, convert_even_time_to_datetime
 import requests
 import os
+from datetime import datetime, timezone
 
 from mlmodel_earthquake.training_model import load_model, train_model_predict_next_eartquake_with_custom_model
+from mlmodel_earthquake.helpers.get_boundary_plate import get_boundary_plate_distance
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,7 +39,6 @@ def get_location_earthquake_historical_data(request):
         urls = EARTHQUAKE_HISTORICAL_DATA
 
         lat, lon = get_location_coordinates(location)
-        print(lat, lon)
 
         if not lat or not lon:
             return Response({'error': 'Unable to get location'}, status=status.HTTP_400_BAD_REQUEST)
@@ -62,7 +63,6 @@ def get_location_earthquake_historical_data(request):
             return Response({'error': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
         
 
-
         for feature in data['features']:
             props = feature['properties']
             coords = feature['geometry']['coordinates']
@@ -75,7 +75,12 @@ def get_location_earthquake_historical_data(request):
         data_send = [[props['mag'], coords[2], coords[1], coords[0]]]
         predicted_data = load_model(data_send, location)
 
-        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(input_data=None)
+        plate_distance = get_boundary_plate_distance(coords[0], coords[1])
+
+        if not plate_distance:
+            return Response({'error': 'Unable to get plate distance'}, status=status.HTTP_400_BAD_REQUEST)
+       
+        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(props['mag'], coords[2], props['time'], plate_distance)
 
         if not predicted_data:
             return Response({'error': 'Unable to predict data'}, status=status.HTTP_400_BAD_REQUEST)
