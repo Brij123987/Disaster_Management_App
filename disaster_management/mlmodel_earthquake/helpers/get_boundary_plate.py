@@ -1,0 +1,74 @@
+import geopandas as gpd
+from shapely.geometry import Point
+from datetime import datetime
+import pandas as pd
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+
+BOUNDARIES_JSON_DIR = os.getenv('BOUNDARIES_JSON_DIR')
+BASE_DIR = os.getenv('BASE_DIR')
+
+import logging
+import logging.config
+from django.conf import settings
+
+# Apply Django's logging config
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('custom_logger')
+
+
+def get_boundary_plate_distance(long, lat):
+    try:
+        boundaries = gpd.read_file(BOUNDARIES_JSON_DIR + "PB2002_boundaries.json")
+
+        # Your point of interest
+        point = Point(long, lat)
+
+        # Convert to GeoSeries for spatial operations
+        point_gdf = gpd.GeoSeries([point], crs="EPSG:4326")
+
+        # Reproject for distance calculation (meters)
+        boundaries = boundaries.to_crs(epsg=3857)
+        point_gdf = point_gdf.to_crs(epsg=3857)
+
+        # Calculate distance to nearest boundary
+        min_distance = boundaries.distance(point_gdf[0]).min()
+        print(min_distance)
+
+        return min_distance
+
+    except Exception as e:
+        logger.error(f"Error in get_boundary_plate_distance: {str(e)}")
+        return None
+    
+
+def updated_csv():
+    try:
+        file_path = f"japan_earthquake_data.csv"
+        full_path = os.path.join(BASE_DIR, file_path)
+
+        df = pd.read_csv(full_path)
+        print(f"-------------df__1: ")
+
+        df['DateTime'] = pd.to_datetime(df['DateTime'])
+        df = df.sort_values(by='DateTime')
+
+        df['TimeSeriesLast'] = df['DateTime'].diff().dt.total_seconds() / 3600
+        df['MagnitudeRollingAvg'] = df['Magnitude'].rolling(window=5).mean()
+
+        df['MagnitudeShifted'] = df['Magnitude'].shift(-1)
+
+        plate_dist = get_boundary_plate_distance("41.5972", "2.2943")
+
+        df['PlateDistance'] = plate_dist
+
+        print(f"-------------df_data: {df.head()}")
+
+        return df
+
+    except Exception as e:
+        logger.error(f"Error in updated_csv: {str(e)}")
+        return None

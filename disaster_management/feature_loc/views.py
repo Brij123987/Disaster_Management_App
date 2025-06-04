@@ -7,7 +7,7 @@ from feature_loc.helpers.earthquake_data_write import write_earthquake_data_to_c
 import requests
 import os
 
-from mlmodel_earthquake.training_model import load_model
+from mlmodel_earthquake.training_model import load_model, train_model_predict_next_eartquake_with_custom_model
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -75,6 +75,8 @@ def get_location_earthquake_historical_data(request):
         data_send = [[props['mag'], coords[2], coords[1], coords[0]]]
         predicted_data = load_model(data_send)
 
+        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(input_data=None)
+
         if not predicted_data:
             return Response({'error': 'Unable to predict data'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -84,7 +86,8 @@ def get_location_earthquake_historical_data(request):
             'longitude': lon,
             'Magnitude' : props['mag'],
             'coords': coords,
-            'predicted_data': predicted_data
+            'predicted_data': predicted_data,
+            'predict_next_earthquake': predict_next_earthquake
         }
 
         return Response({'data':response_data}, status=status.HTTP_200_OK)
