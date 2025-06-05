@@ -49,7 +49,7 @@ def get_location_earthquake_historical_data(request):
             'longitude': lon,
             'maxradiuskm': 1000,
             'starttime': '2025-05-01',
-            'endtime': '2025-06-04',
+            'endtime': '2025-06-05',
         }
 
         response = requests.get(urls, params=params)
@@ -72,18 +72,18 @@ def get_location_earthquake_historical_data(request):
             if not csv_data:
                 return Response({'error': 'Unable to write data to csv'}, status=status.HTTP_400_BAD_REQUEST)
 
-        data_send = [[props['mag'], coords[2], coords[1], coords[0]]]
-        predicted_data = load_model(data_send, location)
-
         plate_distance = get_boundary_plate_distance(coords[0], coords[1]) / 1000
 
         if not plate_distance:
             return Response({'error': 'Unable to get plate distance'}, status=status.HTTP_400_BAD_REQUEST)
-       
-        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(props['mag'], coords[2], props['time'], plate_distance, coords[0], coords[1], location)
+        
+        data_send = [[props['mag'], coords[2], coords[1], coords[0], props['time'] / 3600, plate_distance]]
+        predicted_data = load_model(data_send, coords[0], coords[1], location)
 
         if not predicted_data:
             return Response({'error': 'Unable to predict data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        predict_next_earthquake = train_model_predict_next_eartquake_with_custom_model(props['mag'], coords[2], props['time'], plate_distance, coords[0], coords[1], location)
 
         response_data = {
             'location': location,
