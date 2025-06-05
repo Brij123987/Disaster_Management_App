@@ -58,5 +58,5 @@ def model_processing(long, lat, location):
         return X_train, X_test, y_train, y_test, scaler
     
     except Exception as e:
-        logger.error(f"Error in model processing: {str(e)}")
+        logger.error(f"Error in model processing: {str(e)}", exc_info=True)
         return None, None, None, None

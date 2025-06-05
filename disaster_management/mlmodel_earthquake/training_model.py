@@ -50,7 +50,7 @@ def train_save_model(long, lat, location):
         return True
 
     except Exception as e:
-        logger.error(f"Error training model: {str(e)}")
+        logger.error(f"Error training model: {str(e)}" , exc_info=True)
         return False
 
 
@@ -82,7 +82,7 @@ def load_model(input_data, long, lat, location):
         return res
 
     except Exception as e:
-        logger.error(f"Error loading model: {str(e)}")
+        logger.error(f"Error loading model: {str(e)}", exc_info=True)
         return None
 
 
@@ -110,7 +110,7 @@ def train_model_predict_next_eartquake(long, lat, loc):
         return True
         
     except Exception as e:
-        logger.error(f"train_model_predict_next_eartquake: {str(e)}")
+        logger.error(f"train_model_predict_next_eartquake: {str(e)}", exc_info=True)
         return None
     
 
@@ -137,7 +137,7 @@ def train_model_predict_next_eartquake_time(long, lat, loc):
         return True
 
     except Exception as e:
-        logger.error(f"train_model_predict_next_eartquake_time: {str(e)}")
+        logger.error(f"train_model_predict_next_eartquake_time: {str(e)}", exc_info=True)
         return None
     
 
@@ -173,5 +173,5 @@ def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, event
         }
     
     except Exception as e:
-        logger.error(f"train_model_predict_next_eartquake_with_custom_model: {str(e)}")
+        logger.error(f"train_model_predict_next_eartquake_with_custom_model: {str(e)}", exc_info=True)
         return None
