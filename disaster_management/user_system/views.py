@@ -40,7 +40,7 @@ def get_user_data(request):
         return Response({'error': 'Invalid JSON'}, status=status.HTTP_400_BAD_REQUEST)
     
     except Exception as e:
-        logger.error(f'Error getting user data: {e}')
+        logger.error(f'Error getting user data: {e}', exc_info=True)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -63,5 +63,5 @@ def create_user_data(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)  
 
     except Exception as e:
-        logger.error(f'Error creating user data: {e}')
+        logger.error(f'Error creating user data: {e}', exc_info=True)
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
