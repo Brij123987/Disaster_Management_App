@@ -30,10 +30,9 @@ def model_processing(long, lat, location):
         # full_path = os.path.join(BASE_DIR, file_path)
 
         df = updated_csv(long, lat, location)
-        print(df)
+    
         df = df.dropna(subset=['TimeSeriesLast'])
-        print(df.head())
-        print("testtttttttt")
+        
         if df.empty:
             logger.error("The data frame is empty")
             return None

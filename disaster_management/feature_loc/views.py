@@ -58,19 +58,17 @@ def get_location_earthquake_historical_data(request):
             return Response({'error': 'Unable to get data'}, status=status.HTTP_400_BAD_REQUEST)
 
         data = response.json()
-
+    
         if not data or not data['features']:
             return Response({'error': 'No data found'}, status=status.HTTP_404_NOT_FOUND)
         
+        props = data['features'][0]['properties']
+        coords = data['features'][0]['geometry']['coordinates']
 
-        for feature in data['features']:
-            props = feature['properties']
-            coords = feature['geometry']['coordinates']
+        csv_data = write_earthquake_data_to_csv(location, data['features'])
 
-            csv_data = write_earthquake_data_to_csv(location, props, coords)
-
-            if not csv_data:
-                return Response({'error': 'Unable to write data to csv'}, status=status.HTTP_400_BAD_REQUEST)
+        if not csv_data:
+            return Response({'error': 'Unable to write data to csv'}, status=status.HTTP_400_BAD_REQUEST)
 
         plate_distance = get_boundary_plate_distance(coords[0], coords[1]) / 1000
 
