@@ -30,11 +30,11 @@ PREDICT_MODEL_PATH = os.path.join(BASE_DIR, "predict_model.pkl")
 PREDICT_MODEL_TIME_PATH = os.path.join(BASE_DIR, "predict_model_time.pkl")
 
 
-def train_save_model(location):
+def train_save_model(long, lat, location):
     try:
         model = RandomForestClassifier()
 
-        X_train, X_test, y_train, y_test, scaler = model_processing(location)
+        X_train, X_test, y_train, y_test, scaler = model_processing(long, lat, location)
 
         if any(x is None for x in [X_train, X_test, y_train, y_test, scaler]):
             logger.error("Data is not available for training the model")
@@ -55,9 +55,9 @@ def train_save_model(location):
 
 
 
-def load_model(input_data, location):
+def load_model(input_data, long, lat, location):
     try:
-        res = train_save_model(location)
+        res = train_save_model(long, lat, location)
         if not res:
             logger.error("Model is not trained")
             return None
