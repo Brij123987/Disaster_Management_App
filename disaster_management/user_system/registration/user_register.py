@@ -27,7 +27,7 @@ def create_user(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     except Exception as e:
-        logger.error(f"Error creating user: {str(e)}")
+        logger.error(f"Error creating user: {str(e)}", exc_info=True)
         return Response({"error": "Error creating user"}, status=status.HTTP_400_BAD_REQUEST)
     
 
@@ -53,5 +53,5 @@ def user_login(request):
         return Response({"error":"Invalid Uername or Password"}, status=status.HTTP_401_UNAUTHORIZED)
 
     except Exception as e:
-        logger.error(f"Error logging in user: {str(e)}")
+        logger.error(f"Error logging in user: {str(e)}", exc_info=True)
         return Response({"error": "Error logging in user"}, status=status.HTTP_400_BAD_REQUEST)
