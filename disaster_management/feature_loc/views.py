@@ -97,5 +97,5 @@ def get_location_earthquake_historical_data(request):
 
 
     except Exception as e:
-        logger.error(f"Error in get_location_earthquake_historical_data: {str(e)}")
-        return Response({"Error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        logger.error(f"Error in get_location_earthquake_historical_data: {str(e)}", exc_info=True)
+        return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -41,7 +41,7 @@ def estimate_aftershock_risk(magnitude, depth_km, event_time):
         
 
     except Exception as e:
-        logger.error(f"Error in estimate_aftershock_risk: {str(e)}")
+        logger.error(f"Error in estimate_aftershock_risk: {str(e)}", exc_info=True)
         return None
 
 
@@ -54,7 +54,7 @@ def convert_even_time_to_datetime(Event_time):
         return event_time
   
     except Exception as e:
-        logger.error(f"Error in convert_even_time_to_datetime: {str(e)}")
+        logger.error(f"Error in convert_even_time_to_datetime: {str(e)}", exc_info=True)
         return None
 
 
@@ -112,6 +112,6 @@ def write_earthquake_data_to_csv(location, features):
         return True
 
     except Exception as e:
-        logger.error(f"Error in the function write_earthquake_data_to_csv: {e}")
+        logger.error(f"Error in the function write_earthquake_data_to_csv: {e}",exc_info=True)
         return False
 

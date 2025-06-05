@@ -21,5 +21,5 @@ def get_location_coordinates(location):
             return None, None
         
     except Exception as e:
-        logger.error(f"Error getting location coordinates: {str(e)}")
+        logger.error(f"Error getting location coordinates: {str(e)}", exc_info=True)
         return None, None
