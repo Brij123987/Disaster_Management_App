@@ -40,7 +40,7 @@ def get_boundary_plate_distance(long, lat):
         return min_distance
 
     except Exception as e:
-        logger.error(f"Error in get_boundary_plate_distance: {str(e)}")
+        logger.error(f"Error in get_boundary_plate_distance: {str(e)}", exc_info=True)
         return None
     
 
@@ -70,5 +70,5 @@ def updated_csv(long, lat, loc):
         return df
 
     except Exception as e:
-        logger.error(f"Error in updated_csv: {str(e)}")
+        logger.error(f"Error in updated_csv: {str(e)}",exc_info=True)
         return None

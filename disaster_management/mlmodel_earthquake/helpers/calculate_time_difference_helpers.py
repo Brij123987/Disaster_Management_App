@@ -23,5 +23,5 @@ def get_time_since_last_earthquake(event_time, long, lat, loc):
         return time_since_last
     
     except Exception as e:
-        logger.error(f"Error in get_time_since_last_earthquake: {str(e)}")
+        logger.error(f"Error in get_time_since_last_earthquake: {str(e)}", exc_info=True)
         return None
