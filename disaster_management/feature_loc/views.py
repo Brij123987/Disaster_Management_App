@@ -133,7 +133,7 @@ def get_cyclone_prediction(request):
             "VERSION" : "1.3.0",
             "WIDTH" : "2048",
             "HEIGHT" : "512",
-            "LAYERS" : "MODIS_Aqua_CorrectedReflectance_TrueColor",
+            "LAYERS" : "VIIRS_SNPP_CorrectedReflectance_TrueColor",
             "FORMAT" : "image/png",
             "REQUEST" : "GetMap",
             "TIME" : "2025-06-04",
