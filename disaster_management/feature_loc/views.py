@@ -117,6 +117,9 @@ def get_cyclone_prediction(request):
         
         lat, lon = get_location_coordinates(location)
 
+        if not lat or not lon:
+            return Response({'error': 'Location not found'}, status=status.HTTP_400_BAD_REQUEST)
+
         minx, miny, maxx, maxy = get_bbox(lon, lat)
         print(f"-------------------: {minx}, {miny}, {maxx}, {maxy}")
 
@@ -130,7 +133,7 @@ def get_cyclone_prediction(request):
             "VERSION" : "1.3.0",
             "WIDTH" : "2048",
             "HEIGHT" : "512",
-            "LAYERS" : "MODIS_Terra_CorrectedReflectance_TrueColor",
+            "LAYERS" : "MODIS_Aqua_CorrectedReflectance_TrueColor",
             "FORMAT" : "image/png",
             "REQUEST" : "GetMap",
             "TIME" : "2025-06-04",
