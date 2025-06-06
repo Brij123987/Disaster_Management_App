@@ -1,3 +1,6 @@
+from io import BytesIO
+from tkinter import Image
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -10,11 +13,14 @@ from datetime import datetime, timezone
 
 from mlmodel_earthquake.training_model import load_model, train_model_predict_next_eartquake_with_custom_model
 from mlmodel_earthquake.helpers.get_boundary_plate import get_boundary_plate_distance
+from feature_loc.helpers.convert_loc_into_bbox_helpers import get_bbox
 
 from dotenv import load_dotenv
 load_dotenv()
 
 EARTHQUAKE_HISTORICAL_DATA = os.getenv('EARTHQUAKE_HISTORICAL_URLS')
+
+CYCLONE_LOCATION_DATA = os.getenv('CYCLONE_LOCATION_DATA')
 
 import logging
 import logging.config
@@ -98,4 +104,49 @@ def get_location_earthquake_historical_data(request):
 
     except Exception as e:
         logger.error(f"Error in get_location_earthquake_historical_data: {str(e)}", exc_info=True)
+        return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_cyclone_prediction(request):
+    try:
+        location = request.query_params.get('location')
+
+        if not location:
+            return Response({'error': 'Location is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        lat, lon = get_location_coordinates(location)
+
+        minx, miny, maxx, maxy = get_bbox(lon, lat)
+        print(f"-------------------: {minx}, {miny}, {maxx}, {maxy}")
+
+        if not all([minx, miny, maxx, maxy]):
+            return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
+
+        urls = CYCLONE_LOCATION_DATA
+    
+        params = {
+            "SERVICE" : "WMS",
+            "VERSION" : "1.3.0",
+            "WIDTH" : "2048",
+            "HEIGHT" : "512",
+            "LAYERS" : "MODIS_Terra_CorrectedReflectance_TrueColor",
+            "FORMAT" : "image/png",
+            "REQUEST" : "GetMap",
+            "TIME" : "2025-06-04",
+            "CRS" : "EPSG:3857",
+            "BBOX" : f"{minx}, {miny}, {maxx}, {maxy}"
+        }
+
+        response = requests.get(urls, params = params)
+        # print(response.content)
+        
+        if response.status_code != 200:
+            return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return HttpResponse(response.content, content_type="image/png", status=status.HTTP_200_OK, headers={"Content-Disposition": "attachment; filename=satellite.png"})
+
+
+    except Exception as e:
+        logger.error(f"Error in get_cyclone_prediction: {str(e)}", exc_info=True)
         return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
