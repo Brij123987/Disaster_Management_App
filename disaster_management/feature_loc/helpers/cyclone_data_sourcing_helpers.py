@@ -32,9 +32,26 @@ def get_cyclone_detail_data(latitude, longitude):
             logger.error(f"Failed to retrieve cyclone data. Status code: {response.status_code}")
             return None
         
-        return response.json()
+        storm_result = get_storm_developes(response.json()) 
+
+        return response.json(), storm_result
 
 
     except Exception as e:
         logger.error(f"Error occurred while fetching cyclone detail data: {str(e)}", exc_info=True)
+        return None, None
+    
+
+def get_storm_developes(data):
+    try:
+        if not data:
+            return None
+
+        if data['wind']['speed'] >= 34:
+            return 1
+        
+        return 0
+
+    except Exception as e:
+        logger.error(f"Error occurred while fetching storm develops: {str(e)}", exc_info=True)
         return None
