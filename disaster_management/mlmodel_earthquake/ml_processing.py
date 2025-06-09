@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE
+from imblearn.over_sampling import SMOTE, RandomOverSampler, BorderlineSMOTE, ADASYN
 
 from mlmodel_earthquake.helpers.get_boundary_plate import updated_csv
 
@@ -25,10 +25,6 @@ BASE_DIR = os.getenv('BASE_DIR')
 
 def model_processing(long, lat, location):
     try:
-        # EarthQuake DataSet
-        # file_path = f"{location}_earthquake_data.csv"
-        # full_path = os.path.join(BASE_DIR, file_path)
-
         df = updated_csv(long, lat, location)
     
         df = df.dropna(subset=['TimeSeriesLast'])
@@ -49,7 +45,7 @@ def model_processing(long, lat, location):
         X_scaled = scaler.fit_transform(X)
 
         # Handle Imbalanced Classes
-        sm = SMOTE(random_state=42)
+        sm = RandomOverSampler(random_state=42)
         X_resampled, y_resampled = sm.fit_resample(X_scaled, y)
 
         # Split
@@ -59,4 +55,4 @@ def model_processing(long, lat, location):
     
     except Exception as e:
         logger.error(f"Error in model processing: {str(e)}", exc_info=True)
-        return None, None, None, None
+        return None, None, None, None, None
