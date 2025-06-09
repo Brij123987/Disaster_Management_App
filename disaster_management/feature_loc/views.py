@@ -15,6 +15,7 @@ from mlmodel_earthquake.training_model import load_model, train_model_predict_ne
 from mlmodel_earthquake.helpers.get_boundary_plate import get_boundary_plate_distance
 from feature_loc.helpers.convert_loc_into_bbox_helpers import get_bbox
 from feature_loc.helpers.generate_sateliite_img_helpers import generate_satellite_img_of_location
+from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_detail_data
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -122,7 +123,6 @@ def get_cyclone_prediction(request):
             return Response({'error': 'Location not found'}, status=status.HTTP_400_BAD_REQUEST)
 
         minx, miny, maxx, maxy = get_bbox(lon, lat)
-        print(f"-------------------: {minx}, {miny}, {maxx}, {maxy}")
 
         if not all([minx, miny, maxx, maxy]):
             return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
@@ -132,6 +132,10 @@ def get_cyclone_prediction(request):
         
         if response.status_code != 200:
             return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        cyclone_data = get_cyclone_detail_data(lat, lon)
+
+        print(f"------------------------100: {cyclone_data}")
         
         return HttpResponse(response.content, content_type="image/png", status=status.HTTP_200_OK, headers={"Content-Disposition": "attachment; filename=satellite.png"})
 
