@@ -14,6 +14,7 @@ from datetime import datetime, timezone
 from mlmodel_earthquake.training_model import load_model, train_model_predict_next_eartquake_with_custom_model
 from mlmodel_earthquake.helpers.get_boundary_plate import get_boundary_plate_distance
 from feature_loc.helpers.convert_loc_into_bbox_helpers import get_bbox
+from feature_loc.helpers.generate_sateliite_img_helpers import generate_satellite_img_of_location
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -126,22 +127,7 @@ def get_cyclone_prediction(request):
         if not all([minx, miny, maxx, maxy]):
             return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
 
-        urls = CYCLONE_LOCATION_DATA
-    
-        params = {
-            "SERVICE" : "WMS",
-            "VERSION" : "1.3.0",
-            "WIDTH" : "2048",
-            "HEIGHT" : "512",
-            "LAYERS" : "VIIRS_SNPP_CorrectedReflectance_TrueColor",
-            "FORMAT" : "image/png",
-            "REQUEST" : "GetMap",
-            "TIME" : "2025-06-04",
-            "CRS" : "EPSG:3857",
-            "BBOX" : f"{minx}, {miny}, {maxx}, {maxy}"
-        }
-
-        response = requests.get(urls, params = params)
+        response = generate_satellite_img_of_location(minx, miny, maxx, maxy)
         # print(response.content)
         
         if response.status_code != 200:
