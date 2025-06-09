@@ -1,4 +1,5 @@
 import os
+import csv
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -55,3 +56,68 @@ def get_storm_developes(data):
     except Exception as e:
         logger.error(f"Error occurred while fetching storm develops: {str(e)}", exc_info=True)
         return None
+
+
+def write_cyclone_daily_data_to_csv(location, response_data):
+    try:
+        file_path = f'{location}_cyclone_data.csv'
+        header = ['ID', 'Date', 'Latitude', 'Longitude', 'windPressure', 'windSpeed', 'Storm Develops']
+
+        # Step 1: Load existing IDs once
+        existing_ids = set()
+        file_exists = os.path.isfile(file_path)
+        file_empty = not file_exists or os.stat(file_path).st_size == 0
+
+        if file_exists:
+            with open(file_path, 'r', newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
+                existing_ids = {row['ID'] for row in reader}
+
+        # Step 2: Prepare new rows in memory
+        new_rows = []
+        dates = response_data['daily']['time']
+        pressures = response_data['daily']['pressure_msl_max']
+        windspeeds = response_data['daily']['windspeed_10m_max']
+        lat = response_data['latitude']
+        lon = response_data['longitude']
+
+        for i in range(len(dates)):
+            date = dates[i]
+            pressure = pressures[i]
+            windspeed = windspeeds[i]
+
+            # Skip data points with null values
+            if pressure is None or windspeed is None:
+                continue
+
+            # Create a unique ID for this entry
+            row_id = f"{location}_{date}"
+            if row_id in existing_ids:
+                continue
+
+            # Determine if storm develops (example logic: windspeed > 60 km/h)
+            storm_develops = get_storm_developes(response_data)
+
+            new_rows.append([
+                row_id,
+                date,
+                lat,
+                lon,
+                pressure,
+                windspeed,
+                storm_develops
+            ])
+
+        # Step 3: Write only new rows
+        if new_rows:
+            with open(file_path, 'a', newline='') as csvfile:
+                writer = csv.writer(csvfile)
+                if file_empty:
+                    writer.writerow(header)
+                writer.writerows(new_rows)
+
+        return True
+
+    except Exception as e:
+        logger.error(f"Error occurred while writing cyclone daily data to csv: {str(e)}", exc_info=True)
+        return False
