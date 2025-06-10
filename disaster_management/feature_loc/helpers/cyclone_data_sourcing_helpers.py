@@ -60,7 +60,7 @@ def get_storm_developes(data):
 
 def write_cyclone_daily_data_to_csv(location, response_data):
     try:
-        file_path = f'{location}_cyclone_data.csv'
+        file_path = f'media/cyclone_csv/{location}_cyclone_data.csv'
         header = ['ID', 'Date', 'Latitude', 'Longitude', 'windPressure', 'windSpeed', 'Storm Develops']
 
         # Step 1: Load existing IDs once

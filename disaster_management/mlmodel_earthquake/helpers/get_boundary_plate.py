@@ -46,7 +46,7 @@ def get_boundary_plate_distance(long, lat):
 
 def updated_csv(long, lat, loc):
     try:
-        file_path = f"{loc}_earthquake_data.csv"
+        file_path = f"media/earthquake_csv/{loc}_earthquake_data.csv"
         full_path = os.path.join(BASE_DIR, file_path)
 
         df = pd.read_csv(full_path)

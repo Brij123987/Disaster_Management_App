@@ -61,7 +61,7 @@ def convert_even_time_to_datetime(Event_time):
 
 def write_earthquake_data_to_csv(location, features):
     try:
-        file_path = f'{location}_earthquake_data.csv'
+        file_path = f'media/earthquake_csv/{location}_earthquake_data.csv'
         header = ['ID', 'DateTime', 'Magnitude', 'Depth', 'Latitude', 'Longitude', 'AfterShock_Risk']
 
         # Step 1: Load existing IDs once
