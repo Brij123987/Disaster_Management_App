@@ -1,3 +1,4 @@
+import base64
 from io import BytesIO
 from tkinter import Image
 from django.http import HttpResponse
@@ -16,6 +17,7 @@ from mlmodel_earthquake.helpers.get_boundary_plate import get_boundary_plate_dis
 from feature_loc.helpers.convert_loc_into_bbox_helpers import get_bbox
 from feature_loc.helpers.generate_sateliite_img_helpers import generate_satellite_img_of_location
 from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_detail_data
+from feature_loc.helpers.save_satellite_img_helpers import upload_satelite_image_cloudinary
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -128,16 +130,23 @@ def get_cyclone_prediction(request):
             return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
 
         response = generate_satellite_img_of_location(minx, miny, maxx, maxy)
-        # print(response.content)
         
         if response.status_code != 200:
             return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
         
         cyclone_data = get_cyclone_detail_data(lat, lon)
 
-        print(f"------------------------100: {cyclone_data}")
+        image_url = upload_satelite_image_cloudinary(response.content, location)
+
+        response_data = {
+            'location': location,
+            'image_url': image_url,
+            'cyclone_data': cyclone_data
+        }
         
-        return HttpResponse(response.content, content_type="image/png", status=status.HTTP_200_OK, headers={"Content-Disposition": "attachment; filename=satellite.png"})
+        # return HttpResponse(response.content, content_type="image/png", status=status.HTTP_200_OK, headers={"Content-Disposition": "attachment; filename=satellite.png"})
+
+        return Response({'data':response_data}, status=status.HTTP_200_OK)
 
 
     except Exception as e:
