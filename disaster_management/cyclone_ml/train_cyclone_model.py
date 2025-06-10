@@ -4,9 +4,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import tensorflow as tf
+import keras
 
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras.models import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 import joblib
 
 BASE_DIR = os.getenv('BASE_DIR')
