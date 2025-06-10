@@ -136,7 +136,13 @@ def get_cyclone_prediction(request):
         
         cyclone_data = get_cyclone_detail_data(lat, lon)
 
+        if not cyclone_data:
+            return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
+
         image_url = upload_satelite_image_cloudinary(response.content, location)
+
+        if not image_url:
+            return Response({'error': 'Unable to upload image'}, status=status.HTTP_400_BAD_REQUEST)
 
         response_data = {
             'location': location,
