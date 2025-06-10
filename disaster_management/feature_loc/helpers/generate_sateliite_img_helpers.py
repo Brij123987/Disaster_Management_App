@@ -26,9 +26,10 @@ def generate_satellite_img_of_location(minx, miny, maxx, maxy):
             "LAYERS" : "MODIS_Terra_CorrectedReflectance_TrueColor",
             "FORMAT" : "image/png",
             "REQUEST" : "GetMap",
-            "TIME" : "2025-06-04",
+            "TIME" : "2025-06-10",
             "CRS" : "EPSG:3857",
-            "BBOX" : f"{minx}, {miny}, {maxx}, {maxy}"
+            "BBOX" : f"{minx}, {miny}, {maxx}, {maxy}",
+            "TRANSPARENT" : "TRUE"
         }
 
         response = requests.get(urls, params = params)
