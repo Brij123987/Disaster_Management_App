@@ -8,6 +8,8 @@ import keras
 
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
+from keras.preprocessing import image
+import numpy as np
 import joblib
 
 BASE_DIR = os.getenv('BASE_DIR')
@@ -75,4 +77,31 @@ def trained_cyclone_model_data():
 
     except Exception as e:
         logger.error(f"Error in the trained_cyclone_model_data: {str(e)}", exc_info=True)
+        return None
+    
+
+def predict_cyclone_model_data(satellite_image):
+    try:
+        # Load the Cyclone Model 
+        predicted_data = trained_cyclone_model_data()
+
+        if not predicted_data:
+            logger.error("Model not trained yet.")
+            return None
+
+        img = image.load_img(satellite_image, target_size=(128, 128))
+        img_array = image.img_to_array(img) / 255.0
+        img_array = np.expand_dims(img_array, axis=0)
+
+        # Predict using the saved model
+        prediction = PREDICT_CYCLONE_MODEL.predict(img_array)
+
+        # Interpret the prediction
+        if prediction[0][0] > 0.5:
+            return "Cyclone detected"
+        else:
+            return "No cyclone detected"
+
+    except Exception as e:
+        logger.error(f"Error in the predict_cyclone_model_data: {str(e)}", exc_info=True)
         return None
