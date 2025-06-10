@@ -10,8 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+import json
 from pathlib import Path
 from datetime import timedelta
+import cloudinary
+import cloudinary.uploader
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -211,3 +215,15 @@ SIMPLE_JWT = {
 
 
 AUTH_USER_MODEL = 'user_system.CustomUser'
+
+# Intigrate the Cloundinary Storage
+
+load_dotenv()
+
+
+
+cloudinary.config(
+    cloud_name = os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.getenv('CLOUDINARY_API_KEY'),
+    api_secret = os.getenv('CLOUDINARY_API_SECRET')
+)
