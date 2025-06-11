@@ -80,12 +80,12 @@ def get_cyclone_historical_data(location, latitude, longitude, start_date, end_d
         return None
 
 
-def get_storm_developes(data):
+def get_storm_developes(windspeed):
     try:
-        if not data:
+        if not windspeed:
             return None
 
-        if data['wind']['speed'] >= 34:
+        if windspeed >= 34:
             return 1
         
         return 0
@@ -133,8 +133,8 @@ def write_cyclone_daily_data_to_csv(location, response_data):
                 continue
 
             # Determine if storm develops (example logic: windspeed > 60 km/h)
-            storm_develops = get_storm_developes(response_data)
-
+            storm_develops = get_storm_developes(windspeed)
+            
             new_rows.append([
                 row_id,
                 date,
