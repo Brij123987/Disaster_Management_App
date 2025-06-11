@@ -35,7 +35,10 @@ def get_cyclone_detail_data(latitude, longitude):
             logger.error(f"Failed to retrieve cyclone data. Status code: {response.status_code}")
             return None
         
-        storm_result = get_storm_developes(response.json()) 
+        data = response.json()
+        windspeed = data['wind']['speed']
+        
+        storm_result = get_storm_developes(windspeed) 
 
         return response.json(), storm_result
 
@@ -134,7 +137,7 @@ def write_cyclone_daily_data_to_csv(location, response_data):
 
             # Determine if storm develops (example logic: windspeed > 60 km/h)
             storm_develops = get_storm_developes(windspeed)
-            
+
             new_rows.append([
                 row_id,
                 date,

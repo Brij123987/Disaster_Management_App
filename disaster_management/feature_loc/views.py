@@ -20,6 +20,7 @@ from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_detail
 from feature_loc.helpers.save_satellite_img_helpers import upload_satelite_image_cloudinary
 from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_historical_data
 from feature_loc.helpers.generate_start_end_date import get_start_date
+from cyclone_ml.predict_cyclone import train_cyclone_model
 
 
 from dotenv import load_dotenv
@@ -115,19 +116,14 @@ def get_location_earthquake_historical_data(request):
 
 
 @api_view(['GET'])
-def get_cyclone_prediction(request):
+def get_cyclone_data(request):
     try:
         location = request.query_params.get('location')
         current_date = request.query_params.get('end_date')
 
-        start_date =  get_start_date(current_date)
+        if not location or not current_date:
+            return Response({'error': 'Location and Current Date are required'}, status=status.HTTP_400_BAD_REQUEST) 
 
-        if not start_date:
-            return Response({'error': 'Unable to get start date'}, status=status.HTTP_400_BAD_REQUEST)
-
-        if not location:
-            return Response({'error': 'Location is required'}, status=status.HTTP_400_BAD_REQUEST)
-        
         lat, lon = get_location_coordinates(location)
 
         if not lat or not lon:
@@ -153,17 +149,11 @@ def get_cyclone_prediction(request):
         if not image_url:
             return Response({'error': 'Unable to upload image'}, status=status.HTTP_400_BAD_REQUEST)
 
-        data_store = get_cyclone_historical_data(location, lat, lon, start_date, current_date)
-
-        if not data_store:
-            return Response({'error': 'Unable to get cyclone historical data'}, status=status.HTTP_400_BAD_REQUEST)
-
         
         response_data = {
             'location': location,
             'image_url': image_url,
             'cyclone_data': cyclone_data,
-            'historical_data': "Save Data to CSV" if data_store else "No Data Found",
         }
         
         # return HttpResponse(response.content, content_type="image/png", status=status.HTTP_200_OK, headers={"Content-Disposition": "attachment; filename=satellite.png"})
@@ -173,4 +163,55 @@ def get_cyclone_prediction(request):
 
     except Exception as e:
         logger.error(f"Error in get_cyclone_prediction: {str(e)}", exc_info=True)
+        return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_cyclone_prediction(request):
+    try:
+        location = request.query_params.get('location')
+        current_date = request.query_params.get('end_date')
+
+        if not location or not current_date:
+            return Response({'error': 'Location and Current Date are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        start_date =  get_start_date(current_date)
+
+        if not start_date:
+            return Response({'error': 'Unable to get start date'}, status=status.HTTP_400_BAD_REQUEST)
+  
+        lat, lon = get_location_coordinates(location)
+
+        if not lat or not lon:
+            return Response({'error': 'Location not found'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        cyclone_data = get_cyclone_detail_data(lat, lon)
+
+        if not cyclone_data:
+            return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        data_store = get_cyclone_historical_data(location, lat, lon, start_date, current_date)
+
+        if not data_store:
+            return Response({'error': 'Unable to get cyclone historical data'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Extract required values
+        cyclone_data = cyclone_data[0]
+        latitude = cyclone_data['coord']['lat']
+        latitude = cyclone_data['coord']['lon']
+        wind_speed = cyclone_data['wind']['speed']
+        pressure = cyclone_data['main']['pressure']
+
+        cyclone_pre = train_cyclone_model(location, latitude, latitude, wind_speed, pressure)
+
+        response_data = {
+            'location': location,
+            'historical_data': "Data Saved to csv" if data_store else "Data Not Saved",
+            "Cyclone Prediction": cyclone_pre
+        }
+
+        return Response({"data": response_data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error(f"Error in get_cyclone_prediction: {str(e)}", exc_info= True)
         return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
