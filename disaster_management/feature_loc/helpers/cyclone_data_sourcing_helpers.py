@@ -7,6 +7,8 @@ import requests
 
 CYCLONE_DETAILS_DATA_URL = os.getenv('CYCLONE_DETAILS_DATA_URL')
 CYCLONE_DATA_API_KEY = os.getenv('CYCLONE_DATA_API_KEY')
+CYCLONE_HISTORICAL_DATA_URL = os.getenv('CYCLONE_HISTORICAL_DATA_URL')
+
 
 import logging
 import logging.config
@@ -42,6 +44,41 @@ def get_cyclone_detail_data(latitude, longitude):
         logger.error(f"Error occurred while fetching cyclone detail data: {str(e)}", exc_info=True)
         return None, None
     
+def get_cyclone_historical_data(location, latitude, longitude, start_date, end_date):
+    try:
+        urls = CYCLONE_HISTORICAL_DATA_URL
+
+        params = {
+            "latitude" : latitude,
+            "longitude" : longitude,
+            "start_date" : start_date,
+            "end_date" : end_date,
+            "daily" : "pressure_msl_max,windspeed_10m_max",
+            "timezone" : "auto"
+        }
+        print(params)
+
+        response = requests.get(urls, params=params)
+        print(response)
+
+        if response.status_code != 200:
+            logger.error(f"Failed to retrieve cyclone historical data. Status code: {response.status_code}")
+            return None
+        
+        historical_data = response.json()
+
+        csv_data = write_cyclone_daily_data_to_csv(location, historical_data)
+
+        if not csv_data:
+            logger.error(f"Failed to write cyclone historical data to csv file")
+            return False
+
+        return True
+
+    except Exception as e:
+        logger.error(f"Error occurred while fetching cyclone historical data: {str(e)}", exc_info=True)
+        return None
+
 
 def get_storm_developes(data):
     try:
