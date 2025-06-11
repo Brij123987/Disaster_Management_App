@@ -9,16 +9,16 @@ load_dotenv()
 
 BASE_DIR = os.getenv('BASE_DIR')
 
-# import logging
-# import logging.config
-# from django.conf import settings
+import logging
+import logging.config
+from django.conf import settings
 
-# # Apply Django's logging config
-# logging.config.dictConfig(settings.LOGGING)
-# logger = logging.getLogger('custom_logger')
+# Apply Django's logging config
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('custom_logger')
 
 
-def train_cyclone_model(location="mumbai"):
+def train_cyclone_model(location, lat, lon, wind_speed, wind_pressure):
     try:
         # Create a DataFrame from the input data
         file_path = os.path.join(BASE_DIR, "media", "cyclone_csv", f"{location}_cyclone_data.csv")
@@ -36,21 +36,16 @@ def train_cyclone_model(location="mumbai"):
 
         y_pred = clf.predict(X_test)
 
-        print("Accuracy:", accuracy_score(y_test, y_pred))
 
-        new_data = [[20.59, 78.96, 12.5, 1005]]  # Sample values
+        new_data = [[lat, lon, wind_speed, wind_pressure]]  # Sample values lat, lon, windspeed, windpressure
         prediction = clf.predict(new_data)
 
         if prediction[0] == 1:
-            print("⚠️ Cyclone is likely to develop in this region.")
+            return "Cyclone is likely to develop in this region."
+
         else:
-            print("✅ No cyclone is expected in this region.")
+            return "No cyclone is expected in this region."
 
     except Exception as e:
-        print(str(e))
-        # logger.error(f"Error in the train_cyclone_model function: {str(e)}", exc_info=True)
-        # return None, None
-
-
-if __name__ == "__main__":
-    train_cyclone_model(location="mumbai")
+        logger.error(f"Error in the train_cyclone_model function: {str(e)}", exc_info=True)
+        return None
