@@ -59,7 +59,7 @@ def get_location_earthquake_historical_data(request):
             'longitude': lon,
             'maxradiuskm': 1000,
             'starttime': '2025-05-01',
-            'endtime': '2025-06-09',
+            'endtime': '2025-06-11',
         }
 
         response = requests.get(urls, params=params)
