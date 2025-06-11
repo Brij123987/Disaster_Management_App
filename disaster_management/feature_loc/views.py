@@ -18,6 +18,9 @@ from feature_loc.helpers.convert_loc_into_bbox_helpers import get_bbox
 from feature_loc.helpers.generate_sateliite_img_helpers import generate_satellite_img_of_location
 from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_detail_data
 from feature_loc.helpers.save_satellite_img_helpers import upload_satelite_image_cloudinary
+from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_historical_data
+from feature_loc.helpers.generate_start_end_date import get_start_date
+
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -59,7 +62,7 @@ def get_location_earthquake_historical_data(request):
             'longitude': lon,
             'maxradiuskm': 1000,
             'starttime': '2025-05-01',
-            'endtime': '2025-06-09',
+            'endtime': '2025-06-11',
         }
 
         response = requests.get(urls, params=params)
@@ -115,6 +118,12 @@ def get_location_earthquake_historical_data(request):
 def get_cyclone_prediction(request):
     try:
         location = request.query_params.get('location')
+        current_date = request.query_params.get('end_date')
+
+        start_date =  get_start_date(current_date)
+
+        if not start_date:
+            return Response({'error': 'Unable to get start date'}, status=status.HTTP_400_BAD_REQUEST)
 
         if not location:
             return Response({'error': 'Location is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -129,7 +138,7 @@ def get_cyclone_prediction(request):
         if not all([minx, miny, maxx, maxy]):
             return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
 
-        response = generate_satellite_img_of_location(minx, miny, maxx, maxy)
+        response = generate_satellite_img_of_location(minx, miny, maxx, maxy, current_date)
         
         if response.status_code != 200:
             return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
@@ -144,10 +153,17 @@ def get_cyclone_prediction(request):
         if not image_url:
             return Response({'error': 'Unable to upload image'}, status=status.HTTP_400_BAD_REQUEST)
 
+        data_store = get_cyclone_historical_data(location, lat, lon, start_date, current_date)
+
+        if not data_store:
+            return Response({'error': 'Unable to get cyclone historical data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        
         response_data = {
             'location': location,
             'image_url': image_url,
-            'cyclone_data': cyclone_data
+            'cyclone_data': cyclone_data,
+            'historical_data': "Save Data to CSV" if data_store else "No Data Found",
         }
         
         # return HttpResponse(response.content, content_type="image/png", status=status.HTTP_200_OK, headers={"Content-Disposition": "attachment; filename=satellite.png"})
