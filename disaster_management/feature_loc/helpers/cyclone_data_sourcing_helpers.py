@@ -87,8 +87,9 @@ def get_storm_developes(windspeed):
     try:
         if not windspeed:
             return None
+        print(f"-------------speed: {windspeed}")
 
-        if windspeed >= 34:
+        if windspeed >= 119:
             return 1
         
         return 0
@@ -136,6 +137,7 @@ def write_cyclone_daily_data_to_csv(location, response_data):
                 continue
 
             # Determine if storm develops (example logic: windspeed > 60 km/h)
+            print("Speed",windspeed)
             storm_develops = get_storm_developes(windspeed)
 
             new_rows.append([
