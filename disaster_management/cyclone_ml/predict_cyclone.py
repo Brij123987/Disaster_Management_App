@@ -1,6 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
+import matplotlib.pyplot as plt
 import pandas as pd
 import os
 
@@ -36,11 +37,10 @@ def train_cyclone_model(location, lat, lon, wind_speed, wind_pressure):
 
         y_pred = clf.predict(X_test)
 
-
         new_data = [[lat, lon, wind_speed, wind_pressure]]  # Sample values lat, lon, windspeed, windpressure
-        prediction = clf.predict(new_data)
+        prediction = clf.predict_proba(new_data)[0][1]
 
-        if prediction[0] == 1:
+        if prediction >= 0.8:
             return "Cyclone is likely to develop in this region."
 
         else:
