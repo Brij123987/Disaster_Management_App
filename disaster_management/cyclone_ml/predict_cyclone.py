@@ -37,11 +37,11 @@ def train_cyclone_model(location, lat, lon, wind_speed, wind_pressure):
 
         y_pred = clf.predict(X_test)
 
-        wind_speed_km_h = wind_speed * 3.6
-        new_data = [[lat, lon, wind_speed, wind_speed_km_h]]  # Sample values lat, lon, windspeed, windpressure
-        prediction = clf.predict_proba(new_data)[0][1]
+        new_data = [[lat, lon, wind_speed, wind_pressure]]  # Sample values lat, lon, windspeed, windpressure
+        print(new_data)
+        prediction = clf.predict(new_data)
 
-        if prediction >= 0.8:
+        if prediction[0] >= 1:
             return "Cyclone is likely to develop in this region."
 
         else:

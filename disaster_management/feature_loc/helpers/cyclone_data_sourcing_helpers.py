@@ -36,16 +36,13 @@ def get_cyclone_detail_data(latitude, longitude):
             return None
         
         data = response.json()
-        windspeed = data['wind']['speed']
         
-        storm_result = get_storm_developes(windspeed) 
-
-        return response.json(), storm_result
+        return data
 
 
     except Exception as e:
         logger.error(f"Error occurred while fetching cyclone detail data: {str(e)}", exc_info=True)
-        return None, None
+        return None
     
 def get_cyclone_historical_data(location, latitude, longitude, start_date, end_date):
     try:
@@ -59,10 +56,8 @@ def get_cyclone_historical_data(location, latitude, longitude, start_date, end_d
             "daily" : "pressure_msl_max,windspeed_10m_max",
             "timezone" : "auto"
         }
-        print(params)
 
         response = requests.get(urls, params=params)
-        print(response)
 
         if response.status_code != 200:
             logger.error(f"Failed to retrieve cyclone historical data. Status code: {response.status_code}")
@@ -87,9 +82,8 @@ def get_storm_developes(windspeed):
     try:
         if not windspeed:
             return None
-        print(f"-------------speed: {windspeed}")
 
-        if windspeed >= 119:
+        if windspeed >= 116:
             return 1
         
         return 0
@@ -119,6 +113,7 @@ def write_cyclone_daily_data_to_csv(location, response_data):
         dates = response_data['daily']['time']
         pressures = response_data['daily']['pressure_msl_max']
         windspeeds = response_data['daily']['windspeed_10m_max']
+
         lat = response_data['latitude']
         lon = response_data['longitude']
 
@@ -126,19 +121,19 @@ def write_cyclone_daily_data_to_csv(location, response_data):
             date = dates[i]
             pressure = pressures[i]
             windspeed = windspeeds[i]
-
+            
             # Skip data points with null values
             if pressure is None or windspeed is None:
                 continue
+
+            # Determine if storm develops (example logic: windspeed > 116 km/h)
+            storm_develops = get_storm_developes(windspeed)
 
             # Create a unique ID for this entry
             row_id = f"{location}_{date}"
             if row_id in existing_ids:
                 continue
 
-            # Determine if storm develops (example logic: windspeed > 60 km/h)
-            print("Speed",windspeed)
-            storm_develops = get_storm_developes(windspeed)
 
             new_rows.append([
                 row_id,
