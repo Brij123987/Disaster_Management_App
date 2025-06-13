@@ -26,7 +26,7 @@ def generate_satellite_img_of_location(minx, miny, maxx, maxy, current_date):
             "LAYERS" : "MODIS_Terra_CorrectedReflectance_TrueColor",
             "FORMAT" : "image/png",
             "REQUEST" : "GetMap",
-            "TIME" : "2025-06-11",
+            "TIME" : "2025-06-12",
             "CRS" : "EPSG:3857",
             "BBOX" : f"{minx}, {miny}, {maxx}, {maxy}",
             "TRANSPARENT" : "TRUE"

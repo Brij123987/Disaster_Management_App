@@ -196,10 +196,10 @@ def get_cyclone_prediction(request):
             return Response({'error': 'Unable to get cyclone historical data'}, status=status.HTTP_400_BAD_REQUEST)
         
         # Extract required values
-        cyclone_data = cyclone_data[0]
+        cyclone_data = cyclone_data
         latitude = cyclone_data['coord']['lat']
         latitude = cyclone_data['coord']['lon']
-        wind_speed = cyclone_data['wind']['speed']
+        wind_speed = round(cyclone_data['wind']['speed'] * 3.6, 2)
         pressure = cyclone_data['main']['pressure']
 
         cyclone_pre = train_cyclone_model(location, latitude, latitude, wind_speed, pressure)
