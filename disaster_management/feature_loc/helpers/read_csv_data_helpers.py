@@ -32,3 +32,22 @@ def get_eathquake_data_from_csv(location):
     except Exception as e:
         logger.error(f"Error in get_eathquake_data_from_csv: {str(e)}", exc_info=True)
         return None
+    
+
+def get_cyclone_data_from_csv(location):
+    try:
+        file_name = f"/media/cyclone_csv/{location}_cyclone_data.csv"
+
+        file_path = BASE_DIR + file_name
+        print(file_path)
+
+        df = pd.read_csv(file_path)
+        df = df.drop(columns=['ID'])
+
+        cyclone_data = df.to_dict(orient='records')
+
+        return cyclone_data
+
+    except Exception as e:
+        logger.error(f"Error in get_cyclone_data_from_csv: {str(e)}", exc_info=True)
+        return None

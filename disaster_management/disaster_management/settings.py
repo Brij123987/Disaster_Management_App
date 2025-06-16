@@ -34,7 +34,13 @@ SECRET_KEY = 'django-insecure-z&b*lirc6^cry%&m9t230q^ie$6#@hi_vmy2sv)t%h^#yj3k7=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 ALLOWED_HOSTS = []
+
+CORS_ALLOWED_ORIGINS = [
+    "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io",
+]
 
 
 # Application definition
@@ -43,6 +49,7 @@ INSTALLED_APPS = [
     "user_system",
     "feature_loc",
     "mlmodel_earthquake",
+    "corsheaders",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +61,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
