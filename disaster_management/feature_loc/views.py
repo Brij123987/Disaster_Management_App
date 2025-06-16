@@ -22,7 +22,7 @@ from feature_loc.helpers.cyclone_data_sourcing_helpers import get_cyclone_histor
 from feature_loc.helpers.generate_start_end_date import get_start_date
 from cyclone_ml.predict_cyclone import train_cyclone_model
 
-from feature_loc.helpers.read_csv_data_helpers import get_eathquake_data_from_csv
+from feature_loc.helpers.read_csv_data_helpers import get_eathquake_data_from_csv, get_cyclone_data_from_csv
 
 import pandas as pd
 
@@ -238,4 +238,21 @@ def get_earthquake_data_json(request):
 
     except Exception as e:
         logger.error(f"Error in get_earthquake_data_json: {str(e)}", exc_info=True)
+        return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['GET'])
+def get_cyclone_data_json(request):
+    try:
+        location = request.query_params.get('location')
+
+        cyclone_data = get_cyclone_data_from_csv(location)
+
+        if not cyclone_data:
+            return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({"data":cyclone_data}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error(f"Error in get_cyclone_data_json: {str(e)}", exc_info=True)
         return Response({"error message": str(e)}, status=status.HTTP_400_BAD_REQUEST)
