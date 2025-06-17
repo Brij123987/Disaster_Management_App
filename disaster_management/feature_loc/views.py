@@ -213,7 +213,7 @@ def get_cyclone_prediction(request):
         response_data = {
             'location': location,
             'historical_data': "Data Saved to csv" if data_store else "Data Not Saved",
-            "Cyclone Prediction": cyclone_pre
+            "CyclonePrediction": cyclone_pre
         }
 
         return Response({"data": response_data}, status=status.HTTP_200_OK)
