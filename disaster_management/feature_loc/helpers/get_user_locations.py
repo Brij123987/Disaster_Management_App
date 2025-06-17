@@ -11,7 +11,7 @@ logger = logging.getLogger('custom_logger')
 
 def get_location_coordinates(location):
     try:
-        geolocator = Nominatim(user_agent="my_user_agent")
+        geolocator = Nominatim(user_agent="my_user_agent", timeout=10)
         location = geolocator.geocode(location)
 
         if location is not None:
