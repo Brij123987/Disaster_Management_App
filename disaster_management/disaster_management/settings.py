@@ -39,7 +39,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 ALLOWED_HOSTS = []
 
 CORS_ALLOWED_ORIGINS = [
-    "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io",
+    "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io"
 ]
 
 
