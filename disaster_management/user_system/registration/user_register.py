@@ -31,7 +31,7 @@ def create_user(request):
         return Response({"error": "Error creating user"}, status=status.HTTP_400_BAD_REQUEST)
     
 
-@api_view(['GET'])
+@api_view(['POST'])
 def user_login(request):
     try:
         username = request.data.get('username')
