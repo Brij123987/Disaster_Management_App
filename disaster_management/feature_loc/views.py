@@ -135,30 +135,30 @@ def get_cyclone_data(request):
         if not lat or not lon:
             return Response({'error': 'Location not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # minx, miny, maxx, maxy = get_bbox(lon, lat)
+        minx, miny, maxx, maxy = get_bbox(lon, lat)
 
-        # if not all([minx, miny, maxx, maxy]):
-        #     return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
+        if not all([minx, miny, maxx, maxy]):
+            return Response({'error': 'Unable to get bbox'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # response = generate_satellite_img_of_location(minx, miny, maxx, maxy, current_date)
+        response = generate_satellite_img_of_location(minx, miny, maxx, maxy, current_date)
         
-        # if response.status_code != 200:
-        #     return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
+        if response.status_code != 200:
+            return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
         
         cyclone_data = get_cyclone_detail_data(lat, lon)
 
         if not cyclone_data:
             return Response({'error': 'Unable to get cyclone data'}, status=status.HTTP_400_BAD_REQUEST)
 
-        # image_url = upload_satelite_image_cloudinary(response.content, location)
+        image_url = upload_satelite_image_cloudinary(response.content, location)
 
-        # if not image_url:
-        #     return Response({'error': 'Unable to upload image'}, status=status.HTTP_400_BAD_REQUEST)
+        if not image_url:
+            return Response({'error': 'Unable to upload image'}, status=status.HTTP_400_BAD_REQUEST)
 
         
         response_data = {
             'location': location,
-            # 'image_url': image_url,
+            'image_url': image_url,
             'cyclone_data': cyclone_data,
         }
         
