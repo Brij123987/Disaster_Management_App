@@ -52,9 +52,12 @@ logger = logging.getLogger('custom_logger')
 def get_location_earthquake_historical_data(request):
     try:
         location = request.query_params.get('location')
+        date = request.query_params.get('date')
 
-        if not location:
+        if not location or not date:
             return Response({'error': 'Location is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        start_date = get_start_date(date)
 
         urls = EARTHQUAKE_HISTORICAL_DATA
 
@@ -68,8 +71,8 @@ def get_location_earthquake_historical_data(request):
             'latitude': lat,
             'longitude': lon,
             'maxradiuskm': 1000,
-            'starttime': '2025-05-01',
-            'endtime': '2025-06-11',
+            'starttime': start_date,
+            'endtime': date,
         }
 
         response = requests.get(urls, params=params)
