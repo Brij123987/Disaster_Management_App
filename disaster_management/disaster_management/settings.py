@@ -36,13 +36,15 @@ DEBUG = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-ALLOWED_HOSTS = []
-
-
-
-CORS_ALLOWED_ORIGINS = [
-    "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io", 
+ALLOWED_HOSTS = [
+    "https://c8c5-103-104-225-10.ngrok-free.app","*"
 ]
+
+
+
+# CORS_ALLOWED_ORIGINS = [
+#     "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io", 
+# ]
 
 
 # Application definition
