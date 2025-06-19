@@ -1,7 +1,9 @@
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
+from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from .ml_processing import model_processing
+from sklearn.metrics import mean_absolute_error, accuracy_score
 import pandas as pd
 import joblib
 import numpy as np
@@ -42,8 +44,11 @@ def train_save_model(long, lat, location):
         
         model.fit(X_train, y_train)
 
-        # Save model and Scaler
+        y_pred = model.predict(X_test)
+        acc =  accuracy_score(y_test, y_pred)
+        logger.error(f"Classifier Accuracy: {acc:.4f}")
 
+        # Save model and Scaler
         joblib.dump(model, MODEL_PATH)
         joblib.dump(scaler, SCALER_PATH)
 
@@ -102,7 +107,13 @@ def train_model_predict_next_eartquake(long, lat, loc):
             ('regressor', RandomForestRegressor())
         ])
 
-        model.fit(X, y)
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        model.fit(X_train, y_train)
+
+        # 🔍 Evaluate MAE
+        y_pred = model.predict(X_test)
+        mae = mean_absolute_error(y_test, y_pred)
+        logger.error(f"Magnitude Prediction MAE: {mae:.2f}")
 
         # Save Predicted Model
         joblib.dump(model, PREDICT_MODEL_PATH)
@@ -129,6 +140,7 @@ def train_model_predict_next_eartquake_time(long, lat, loc):
             ('regressor', RandomForestRegressor())
         ])
 
+        
         model_time.fit(X, y)
 
         # Save Predicted Model
