@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponse
 
 urlpatterns = [
+     path('', lambda request: HttpResponse("✅ Disaster Management App is running.")),
     path('admin/', admin.site.urls),
     path('user/', include('user_system.urls')),
     path('feature/', include('feature_loc.urls')),
