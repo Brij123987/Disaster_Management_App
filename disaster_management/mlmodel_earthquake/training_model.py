@@ -174,9 +174,7 @@ def train_model_predict_next_eartquake_with_custom_model(magnitude, depth, event
         predicted_magnitude = model.predict(input_data)
         predicted_time = model_time.predict(input_data)
 
-        print(f"-------150: {predicted_time}")
 
-        print(f"--------------100: {predicted_magnitude[0]:.1f}")
 
         return {
             "PredictedMagnitude": round(predicted_magnitude[0], 1),

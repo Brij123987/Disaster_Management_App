@@ -38,7 +38,7 @@ def train_cyclone_model(location, lat, lon, wind_speed, wind_pressure):
         y_pred = clf.predict(X_test)
 
         new_data = [[lat, lon, wind_speed, wind_pressure]]  # Sample values lat, lon, windspeed, windpressure
-        print(new_data)
+
         prediction = clf.predict(new_data)
 
         if prediction[0] >= 1:

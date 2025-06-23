@@ -19,9 +19,9 @@ class RedisUserData:
 
     def set_user_data(self, user_id, data):
         # Set user data in Redis
-        print("Test")
+     
         self.redis_client.set(user_id, data)
-        print("Test1")
+    
         
 
     def delete_user_data(self, user_id):

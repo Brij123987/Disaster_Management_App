@@ -9,7 +9,7 @@ load_dotenv()
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-print("base_dir", BASE_DIR)
+
 BOUNDARIES_JSON_DIR = os.path.join(BASE_DIR, "PB2002_boundaries.json")
 
 import logging
