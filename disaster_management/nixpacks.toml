@@ -1,11 +1,17 @@
 [phases.setup]
 nixPkgs = [
+  "python3",
   "pkg-config",
   "mariadb-connector-c"
 ]
 
 [phases.install]
 cmds = [
+  "python3 -m venv /opt/venv",
+  ". /opt/venv/bin/activate",
   "pip install --upgrade pip",
   "pip install -r requirements.txt"
 ]
+
+[start]
+cmd = ". /opt/venv/bin/activate && gunicorn disaster_management.wsgi:application"
