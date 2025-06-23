@@ -42,10 +42,10 @@ DEBUG = True
 CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = [
-    "https://a6cf-103-104-225-10.ngrok-free.app","*"
+    "disastermanagementapp-production.up.railway.app/","localhost","127.0.0.1"
 ]
 
-
+CSRF_TRUSTED_ORIGINS = ["https://disastermanagementapp-production.up.railway.app"]
 
 # CORS_ALLOWED_ORIGINS = [
 #     "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io", 
