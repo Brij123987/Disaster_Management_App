@@ -34,7 +34,7 @@ EARTHQUAKE_HISTORICAL_DATA = os.getenv('EARTHQUAKE_HISTORICAL_URLS')
 
 CYCLONE_LOCATION_DATA = os.getenv('CYCLONE_LOCATION_DATA')
 
-BASE_DIR = os.getenv('BASE_DIR')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 import logging
 import logging.config

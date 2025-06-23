@@ -12,7 +12,7 @@ from keras.preprocessing import image
 import numpy as np
 import joblib
 
-BASE_DIR = os.getenv('BASE_DIR')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 BASE_PATH_CYCLONE_DATA = os.getenv('BASE_PATH_CYCLONE_DATA')
 PREDICT_CYCLONE_MODEL = os.path.join(BASE_DIR, 'predict_cyclone_model.h5')
