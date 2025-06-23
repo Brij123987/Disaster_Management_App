@@ -1,8 +1,9 @@
 [phases.setup]
 nixPkgs = [
   "python310",
+  "unixODBC",  # for pyodbc
   "pkg-config",
-  "mariadb-connector-c"
+  "gcc"        # needed for wheel builds
 ]
 
 [phases.install]
@@ -15,4 +16,5 @@ cmds = [
 
 [start]
 cmd = ". /opt/venv/bin/activate && gunicorn disaster_management.wsgi:application"
+
 
