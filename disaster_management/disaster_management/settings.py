@@ -114,10 +114,9 @@ WSGI_APPLICATION = 'disaster_management.wsgi.application'
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-   DATABASES = {
-        'default': dj_database_url.config(default=DATABASE_URL)
-    } 
-
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+    }
 else:
     DATABASES = {
         'default': {
@@ -125,7 +124,7 @@ else:
             'NAME': os.getenv('DB_NAME', 'railway'),
             'USER': os.getenv('DB_USER', 'postgres'),
             'PASSWORD': os.getenv('DB_PASSWORD'),
-            'HOST': os.getenv('DB_HOST', 'postgres.railway.internal'),
+            'HOST': os.getenv('DB_HOST', 'localhost'),
             'PORT': os.getenv('DB_PORT', '5432'),
         }
     }
