@@ -112,7 +112,7 @@ WSGI_APPLICATION = 'disaster_management.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
+        'ENGINE': os.getenv('DB_ENGINE', "django.db.backends.postgresql"),
         'NAME': os.getenv('NAME'),
         'USER': os.getenv('USER'), 
         'PASSWORD': os.getenv('PASSWORD'),
