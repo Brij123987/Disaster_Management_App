@@ -37,12 +37,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-z&b*lirc6^cry%&m9t230q^ie$6#@hi_vmy2sv)t%h^#yj3k7='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = [
-    "disastermanagementapp-production.up.railway.app/","localhost","127.0.0.1"
+    "disastermanagementapp-production.up.railway.app","localhost","127.0.0.1"
 ]
 
 CSRF_TRUSTED_ORIGINS = ["https://disastermanagementapp-production.up.railway.app"]
