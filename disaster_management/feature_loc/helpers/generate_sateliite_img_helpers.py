@@ -16,11 +16,8 @@ logger = logging.getLogger('custom_logger')
 
 def generate_satellite_img_of_location(minx, miny, maxx, maxy, current_date):
     try:
-        current_date_str = datetime.now().strftime('%Y-%m-%d')
-        print("Current date:", current_date_str)
-
         # Convert string to datetime and subtract 1 day
-        date_obj = datetime.strptime(current_date_str, '%Y-%m-%d')
+        date_obj = datetime.strptime(current_date, '%Y-%m-%d')
         previous_date_obj = date_obj - timedelta(days=1)
 
         # Convert back to string
