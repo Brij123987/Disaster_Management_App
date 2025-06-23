@@ -15,6 +15,8 @@ from pathlib import Path
 from datetime import timedelta
 import cloudinary
 import cloudinary.uploader
+import dj_database_url
+
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -109,17 +111,24 @@ WSGI_APPLICATION = 'disaster_management.wsgi.application'
 #     }
 # }
 
+DATABASE_URL = os.getenv("DATABASE_URL")
 
-DATABASES = {
-    'default': {
-        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.getenv('DB_NAME', 'railway'),
-        'USER': os.getenv('DB_USER', 'postgres'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST', 'postgres.railway.internal'),
-        'PORT': os.getenv('DB_PORT', '5432'),
+if DATABASE_URL:
+   DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL)
+    } 
+
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+            'NAME': os.getenv('DB_NAME', 'railway'),
+            'USER': os.getenv('DB_USER', 'postgres'),
+            'PASSWORD': os.getenv('DB_PASSWORD'),
+            'HOST': os.getenv('DB_HOST', 'postgres.railway.internal'),
+            'PORT': os.getenv('DB_PORT', '5432'),
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
