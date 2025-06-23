@@ -30,4 +30,7 @@ Thumbs.db
 
 db.sqlite3
 
-**/migrations/*.pyc
+# Allow migration files except __pycache__
+!*/migrations/
+!*/migrations/*.py
+__pycache__/
