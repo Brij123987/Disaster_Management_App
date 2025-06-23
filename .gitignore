@@ -26,7 +26,7 @@ Thumbs.db
 
 
 # Cyclone Training Image
-store_cyclone_image/
+# store_cyclone_image/
 
 db.sqlite3
 

@@ -8,8 +8,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-BOUNDARIES_JSON_DIR = os.getenv('BOUNDARIES_JSON_DIR')
-BASE_DIR = os.getenv('BASE_DIR')
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+print("base_dir", BASE_DIR)
+BOUNDARIES_JSON_DIR = os.path.join(BASE_DIR, "PB2002_boundaries.json")
 
 import logging
 import logging.config
@@ -22,7 +23,7 @@ logger = logging.getLogger('custom_logger')
 
 def get_boundary_plate_distance(long, lat):
     try:
-        boundaries = gpd.read_file(BOUNDARIES_JSON_DIR + "PB2002_boundaries.json")
+        boundaries = gpd.read_file(BOUNDARIES_JSON_DIR)
 
         # Your point of interest
         point = Point(long, lat)

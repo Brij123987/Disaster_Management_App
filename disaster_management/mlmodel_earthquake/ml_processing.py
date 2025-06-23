@@ -18,7 +18,7 @@ logging.config.dictConfig(settings.LOGGING)
 logger = logging.getLogger('custom_logger')
 
 
-BASE_DIR = os.getenv('BASE_DIR')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 

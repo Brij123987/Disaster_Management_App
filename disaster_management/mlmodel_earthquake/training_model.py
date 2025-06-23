@@ -23,11 +23,10 @@ logger = logging.getLogger('custom_logger')
 from dotenv import load_dotenv
 load_dotenv()
 
-BASE_DIR = os.getenv('BASE_DIR')
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 MODEL_PATH = os.path.join(BASE_DIR, "model.pkl")
 SCALER_PATH = os.path.join(BASE_DIR, "scaler.pkl")
-
 PREDICT_MODEL_PATH = os.path.join(BASE_DIR, "predict_model.pkl")
 PREDICT_MODEL_TIME_PATH = os.path.join(BASE_DIR, "predict_model_time.pkl")
 
