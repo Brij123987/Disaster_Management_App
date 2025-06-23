@@ -2,8 +2,7 @@
 nixPkgs = [
   "pkg-config",
   "mariadb",
-  "mariadb-connector-c",
-  "mariadb.dev"
+  "mariadb-connector-c"
 ]
 
 [phases.install]
