@@ -112,16 +112,12 @@ WSGI_APPLICATION = 'disaster_management.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.getenv('DB_ENGINE', "django.db.backends.postgresql"),
-        'NAME': os.getenv('NAME'),
-        'USER': os.getenv('USER'), 
-        'PASSWORD': os.getenv('PASSWORD'),
-        'HOST': os.getenv('HOST'), 
-        'PORT': os.getenv('PORT', '1443'),
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-
-        },
+        'ENGINE': os.getenv('DB_ENGINE', 'django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', 'railway'),
+        'USER': os.getenv('DB_USER', 'postgres'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST', 'postgres.railway.internal'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 

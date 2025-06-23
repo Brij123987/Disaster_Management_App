@@ -15,10 +15,10 @@ def get_time_since_last_earthquake(event_time, long, lat, loc):
 
         data = updated_csv(long, lat, loc)
         last_earthquake_time = data['DateTime'].iloc[0].replace(tzinfo=timezone.utc)
-        print(f"-------------100: {last_earthquake_time}")
+
     
         time_since_last = (curr_time - last_earthquake_time).total_seconds() / 3600
-        print(f"-------------------200: {time_since_last}")
+     
 
         return time_since_last
     
