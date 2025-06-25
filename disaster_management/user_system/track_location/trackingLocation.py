@@ -1,0 +1,58 @@
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from geopy.distance import geodesic
+from user_system.models import UserLocationDetail
+
+
+import logging
+import logging.config
+from django.conf import settings
+
+# Apply Django's logging config
+logging.config.dictConfig(settings.LOGGING)
+logger = logging.getLogger('custom_logger')
+
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def get_update_location(request):
+    try:
+        user = request.user
+        location = request.data.get('location')
+        lat = request.data.get('lat')
+        lon = request.data.get('lon')
+        mobileNumber = request.data.get('mobileNumber')
+        countryCode = request.data.get('countryCode')
+        locationConsent = request.data.get('locationConsent')
+
+        # Get or create only based on user
+        record, created = UserLocationDetail.objects.get_or_create(user=user)
+
+        # Always update the static fields
+        record.phonenumber = mobileNumber
+        record.country_code = countryCode
+        record.isTracked = locationConsent
+
+        # Only check distance if lat/lon exist
+        if record.latitude and record.longitude and record.isTracked:
+            old_coords = (float(record.latitude), float(record.longitude))
+            new_coords = (float(lat), float(lon))
+
+            if geodesic(old_coords, new_coords).km < 15:
+                record.save()
+                return Response({'message': 'Location has not changed'}, status=status.HTTP_202_ACCEPTED)
+
+        # Update location info
+        record.latitude = lat
+        record.longitude = lon
+        record.location = location
+        record.save()
+
+        return Response({"status": "Location updated successfully"}, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({"error": f"Error in get_update_location: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+        
