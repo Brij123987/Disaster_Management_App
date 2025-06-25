@@ -63,5 +63,23 @@ def get_update_location(request):
         return Response({"status": "Location updated successfully"}, status=status.HTTP_200_OK)
 
     except Exception as e:
+        logger.error(f"Error in get_update_location: {str(e)}")
         return Response({"error": f"Error in get_update_location: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def stop_tracking(request):
+    try:
+        user = request.user
+
+        user_location = UserLocationDetail.objects.get(user=user)
+
+        if user_location:
+            user_location.isTracked = False
+
         
+        return Response({"message": "Tracking Stopped"}, status=status.HTTP_200_OK)
+    
+    except Exception as e:
+        return Response({"error": f"Error in stop_tracking: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)

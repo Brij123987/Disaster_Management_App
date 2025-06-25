@@ -11,4 +11,5 @@ urlpatterns = [
     path('register/', user_register.create_user, name='register'),
     path('login/',user_register.user_login, name='user_login'),
     path('track-location/',trackingLocation.get_update_location, name='track_location'),
+    path('stop-tracking/',trackingLocation.stop_tracking, name='stop_tracking'),
 ]
