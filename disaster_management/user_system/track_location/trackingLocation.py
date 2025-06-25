@@ -77,8 +77,9 @@ def stop_tracking(request):
 
         if user_location:
             user_location.isTracked = False
+            user_location.save()
 
-        
+
         return Response({"message": "Tracking Stopped"}, status=status.HTTP_200_OK)
     
     except Exception as e:
