@@ -14,10 +14,10 @@ from user_system.constant.twilioConfig import TWILIOCONFIG, EARTHQUAKE_MSG, CYCL
 
 def google_validate_mobile_number(number):
     try:
+
         parsed = phonenumbers.parse(number, None)
 
         phoneData = {
-            'country_code': phonenumbers.region_code(parsed),
             'possible': is_possible_number(parsed),
             'valid': is_valid_number(parsed),
             'carrier': carrier.name_for_number(parsed, 'en'),

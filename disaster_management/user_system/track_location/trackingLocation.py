@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from geopy.distance import geodesic
 from user_system.models import UserLocationDetail
+from user_system.helpers.mobileNumberValidationHelper import google_validate_mobile_number
 
 
 import logging
@@ -27,6 +28,14 @@ def get_update_location(request):
         mobileNumber = request.data.get('mobileNumber')
         countryCode = request.data.get('countryCode')
         locationConsent = request.data.get('locationConsent')
+
+        phoneNumber = countryCode + mobileNumber
+
+        phoneData = google_validate_mobile_number(phoneNumber)
+
+        if not phoneData.get('possible') and not phoneData.get('possible'):
+            return Response({'error': 'Invalid mobile number'}, status=status.HTTP_200_OK)
+        
 
         # Get or create only based on user
         record, created = UserLocationDetail.objects.get_or_create(user=user)
