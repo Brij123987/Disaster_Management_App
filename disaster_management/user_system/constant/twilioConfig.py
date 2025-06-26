@@ -5,10 +5,10 @@ TWILIOCONFIG = {
     'verify_service_sid': 'VAd874b2995761eb80bd92d15f3a7b02b2'
 }
 
-EARTHQUAKE_MSG = f"🌍 Earthquake Alert: A {{magnitude}} magnitude earthquake has been detected near {{location}}. Take cover and stay safe!"
+EARTHQUAKE_MSG = f"🌍 Earthquake Alert: A magnitude magnitude earthquake has been detected near location. Take cover and stay safe!"
 
 
-CYCLONE_MSG = f"🌪 Cyclone Alert: A cyclone with the Wind Speed {{windSpeed}} is expected in {{location}}. Stay indoors and follow safety protocols."
+CYCLONE_MSG = f"🌪 Cyclone Alert: A cyclone with the Wind Speed windSpeed is expected in location. Stay indoors and follow safety protocols."
 
 VONAGE = {
     "key": "cfb717e8",

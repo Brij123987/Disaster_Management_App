@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print("Base", BASE_DIR)
 
 import logging
 import logging.config
@@ -23,9 +22,7 @@ logger = logging.getLogger('custom_logger')
 def train_cyclone_model(location, lat, lon, wind_speed, wind_pressure):
     try:
         # Create a DataFrame from the input data
-        print("----------------------")
         file_path = os.path.join(BASE_DIR, "media", "cyclone_csv", f"{location}_cyclone_data.csv")
-        print(file_path)
         df = pd.read_csv(file_path)
 
         df = df.dropna()

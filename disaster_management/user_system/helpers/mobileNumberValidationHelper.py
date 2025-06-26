@@ -16,7 +16,6 @@ from user_system.constant.twilioConfig import TWILIOCONFIG, EARTHQUAKE_MSG, CYCL
 
 def google_validate_mobile_number(number):
     try:
-
         parsed = phonenumbers.parse(number, None)
 
         phoneData = {
@@ -61,7 +60,7 @@ def twilio_number_verification_status(phone_number, code):
             .verification_checks
             .create(to=phone_number, code=code)
         )
-        print(verification_check)
+
         if verification_check.status == 'approved':
             return True
         else:
@@ -72,13 +71,11 @@ def twilio_number_verification_status(phone_number, code):
         return False
 
 def send_alert_msg_twilio(to_number, alert, magnitude, windSpeed, location):
-    print("Sending --------------------------")
     try:
         account_sid = TWILIOCONFIG['account_sid']
         auth_token = TWILIOCONFIG['auth_token']
         fromNum = TWILIOCONFIG['twilio_number']
 
-        print("Msg --------------------------")
         if alert == 'earthquake':
             msg = EARTHQUAKE_MSG.replace("magnitude", magnitude).replace("location", location)
         else:    
@@ -91,8 +88,7 @@ def send_alert_msg_twilio(to_number, alert, magnitude, windSpeed, location):
             from_=fromNum,
             to=to_number
         )
-        print("Message Sent")
-        print(f"-----------------------100: {message.sid}")
+
         return message.sid
 
     except Exception as e:
