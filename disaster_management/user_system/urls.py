@@ -12,4 +12,6 @@ urlpatterns = [
     path('login/',user_register.user_login, name='user_login'),
     path('track-location/',trackingLocation.get_update_location, name='track_location'),
     path('stop-tracking/',trackingLocation.stop_tracking, name='stop_tracking'),
+    path('otp_send/',trackingLocation.otp_send, name="otp_send"),
+    path("verify_otp/", trackingLocation.verify_otp, name="verify_otp"),
 ]
