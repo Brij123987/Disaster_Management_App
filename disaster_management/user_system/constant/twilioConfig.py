@@ -2,6 +2,7 @@ TWILIOCONFIG = {
     'account_sid': 'ACe28889e6965ed167aea5debe62685077',
     'auth_token': '3ed744a07babc27bc586a20636a9900d',
     'twilio_number': '+1 779 258 3294',
+    'verify_service_sid': 'VAd874b2995761eb80bd92d15f3a7b02b2'
 }
 
 EARTHQUAKE_MSG = f"🌍 Earthquake Alert: A {{magnitude}} magnitude earthquake has been detected near {{location}}. Take cover and stay safe!"

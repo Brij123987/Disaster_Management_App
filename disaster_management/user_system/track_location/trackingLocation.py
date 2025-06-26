@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from geopy.distance import geodesic
 from user_system.models import UserLocationDetail
 from user_system.helpers.mobileNumberValidationHelper import google_validate_mobile_number
+from user_system.helpers.mobileNumberValidationHelper import twilio_number_verification, twilio_number_verification_status
 
 
 import logging
@@ -35,8 +36,7 @@ def get_update_location(request):
 
         if not phoneData.get('possible') and not phoneData.get('possible'):
             return Response({'error': 'Invalid mobile number'}, status=status.HTTP_200_OK)
-        
-
+    
         # Get or create only based on user
         record, created = UserLocationDetail.objects.get_or_create(user=user)
 
@@ -66,6 +66,46 @@ def get_update_location(request):
         logger.error(f"Error in get_update_location: {str(e)}")
         return Response({"error": f"Error in get_update_location: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def otp_send(request):
+    try:
+        phone = request.data.get('phoneNumber')
+
+        if not phone:
+            return Response({'error': 'Phone number is required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        verification = twilio_number_verification(phone)
+
+        return Response({"status": verification }, status=status.HTTP_200_OK)
+
+    except Exception as e:
+        logger.error(f"Error in opt_send: {str(e)}")
+        return Response({"error": f"Error in opt_send: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def verify_otp(request):
+    try:
+        phone = request.data.get('phoneNumber')
+        code = request.data.get('code')
+
+        if not phone or not code:
+            return Response({'error': 'Phone number and code are required'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        verification_check = twilio_number_verification_status(phone, code)
+
+        if verification_check:
+            return Response({"status":"approved","message": "OTP verified successfully"}, status=status.HTTP_200_OK)
+        
+        return Response({"status":"failed", "message":"Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+    except Exception as e:
+        logger.error(f"Error in verify_otp: {str(e)}")
+        return Response({"error": f"Error in verify_otp: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
