@@ -2,6 +2,7 @@ from django.urls import path
 from user_system import views
 from user_system.registration import user_register
 from user_system.track_location import trackingLocation
+from user_system.email_queries import email_queries_api
 
 app_name = "user_system"
 
@@ -14,4 +15,5 @@ urlpatterns = [
     path('stop-tracking/',trackingLocation.stop_tracking, name='stop_tracking'),
     path('otp_send/',trackingLocation.otp_send, name="otp_send"),
     path("verify_otp/", trackingLocation.verify_otp, name="verify_otp"),
+    path('send_user_support_email/',email_queries_api.send_user_support_email, name='send_user_support_email'),
 ]

@@ -10,7 +10,7 @@ def check_and_send_alerts():
     date = datetime.today().strftime('%Y-%m-%d')
 
     try:
-        userLocation = UserLocationDetail.objects.filter(isTracked=0).values('location', 'country_code', 'phonenumber')
+        userLocation = UserLocationDetail.objects.filter(isTracked=True).values('location', 'country_code', 'phonenumber')
 
         for user in userLocation:
             location = user['location']
