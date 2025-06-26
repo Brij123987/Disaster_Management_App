@@ -58,10 +58,10 @@ def twilio_number_verification_status(phone_number, code):
         verification_check = (
             client.verify
             .services(TWILIOCONFIG['verify_service_sid'])
-            .verifications_checks
+            .verification_checks
             .create(to=phone_number, code=code)
         )
-
+        print(verification_check)
         if verification_check.status == 'approved':
             return True
         else:
