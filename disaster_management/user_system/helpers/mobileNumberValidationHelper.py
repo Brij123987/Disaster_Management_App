@@ -9,7 +9,10 @@ logger = logging.getLogger('custom_logger')
 import phonenumbers
 from phonenumbers import geocoder, carrier, is_possible_number, is_valid_number
 from twilio.rest import Client
-from user_system.constant.twilioConfig import TWILIOCONFIG, EARTHQUAKE_MSG, CYCLONE_MSG
+from user_system.constant.twilioConfig import TWILIOCONFIG, EARTHQUAKE_MSG, CYCLONE_MSG, VONAGE
+
+import vonage
+
 
 
 def google_validate_mobile_number(number):
@@ -32,15 +35,17 @@ def google_validate_mobile_number(number):
     
 
 def send_alert_msg_twilio(to_number, alert, magnitude, windSpeed, location):
+    print("Sending --------------------------")
     try:
         account_sid = TWILIOCONFIG['account_sid']
         auth_token = TWILIOCONFIG['auth_token']
         fromNum = TWILIOCONFIG['twilio_number']
 
+        print("Msg --------------------------")
         if alert == 'earthquake':
             msg = EARTHQUAKE_MSG.replace("magnitude", magnitude).replace("location", location)
         else:    
-            msg = CYCLONE_MSG.replace("windSpeed", windSpeed).replace("location", location)
+            msg = CYCLONE_MSG.replace("windSpeed", "windSpeed").replace("location", location)
 
         client = Client(account_sid, auth_token)
 
@@ -49,9 +54,41 @@ def send_alert_msg_twilio(to_number, alert, magnitude, windSpeed, location):
             from_=fromNum,
             to=to_number
         )
-
+        print("Message Sent")
+        print(f"-----------------------100: {message.sid}")
         return message.sid
 
     except Exception as e:
         logger.error(f"Error sending alert message: {str(e)}")
         return False
+    
+
+def send_alert_msg_vonage(to_number, alert, magnitude, windSpeed, location):
+    try:
+        client = vonage.Client(key=VONAGE["key"], secret=VONAGE["secret"])
+        sms = vonage.Sms(client)
+
+        EARTHQUAKE_MSG = "⚠️ Earthquake Alert: Magnitude magnitude detected near location. Stay safe!"
+        CYCLONE_MSG = "🌪️ Cyclone Alert: Wind speed windSpeed km/h expected near location. Take precautions!"
+
+        if alert == 'earthquake':
+            msg = EARTHQUAKE_MSG.replace("magnitude", str(magnitude)).replace("location", location)
+        else:
+            msg = CYCLONE_MSG.replace("windSpeed", str("windSpeed")).replace("location", location)
+
+        response = sms.send_message({
+            "from": VONAGE['from'],
+            "to": +918452015261,
+            "text": msg
+        })
+
+        print(response)
+
+        if response["messages"][0]["status"] == "0":
+            print("✅ Message sent successfully.")
+        else:
+            print(f"❌ Message failed: {response['messages'][0]['error-text']}")
+
+    except Exception as e:
+        print(f"Error sending alert message: {str(e)}")
+        logger.error(f"Error in send_alert_msg_vonage: {str(e)}")
