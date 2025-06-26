@@ -102,10 +102,12 @@ def verify_otp(request):
         
         return Response({"status":"failed", "message":"Invalid OTP"}, status=status.HTTP_400_BAD_REQUEST)
 
-
     except Exception as e:
         logger.error(f"Error in verify_otp: {str(e)}")
         return Response({"error": f"Error in verify_otp: {str(e)}"}, status=status.HTTP_400_BAD_REQUEST)
+    
+
+
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
