@@ -25,7 +25,7 @@ def send_user_support_email(request):
 
         recipient_list = ['brijeshyadav9811@gmail.com']
 
-        full_message = f"Message from {name} and Inquiry Type: {inquiryType} \n\n {message}"
+        full_message = f"Message from {name} & {email} and Inquiry Type: {inquiryType} \n\n {message}"
 
         send_mail(subject, full_message, email, recipient_list, fail_silently=False)
 
