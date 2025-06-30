@@ -11,6 +11,7 @@ def check_and_send_alerts():
 
     try:
         userLocation = UserLocationDetail.objects.filter(isTracked=True).values('location', 'country_code', 'phonenumber')
+        print(userLocation)
 
         for user in userLocation:
             location = user['location']
