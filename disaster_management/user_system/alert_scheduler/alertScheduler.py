@@ -6,7 +6,7 @@ def check_and_send_alerts():
     from user_system.helpers.mobileNumberValidationHelper import send_alert_msg_twilio
 
     print("Starting...............................")
-    API_URL = "http://127.0.0.1:8000"
+    API_URL = "https://disastermanagementapp-production.up.railway.app"
     date = datetime.today().strftime('%Y-%m-%d')
 
     try:
