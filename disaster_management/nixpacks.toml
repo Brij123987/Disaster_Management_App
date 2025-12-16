@@ -13,11 +13,7 @@ cmds = [
   "python3.10 -m venv /opt/venv",
   ". /opt/venv/bin/activate",
   "pip install --upgrade pip",
-  "meson --version",  # Check if meson is installed correctly
-  "pkg-config --version",  # Check if pkg-config is available
-  "gfortran --version",  # Check if gfortran is installed correctly
-  "ls -al",  # List the files in the current directory
-  "pip install --no-cache-dir -r requirements.txt"  # Disable cache
+  "pip install --only-binary :all: -r requirements.txt"  # Force binary wheels
 ]
 
 [start]
