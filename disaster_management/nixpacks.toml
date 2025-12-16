@@ -2,8 +2,10 @@
 nixPkgs = [
   "python310",
   "unixODBC",  # for pyodbc
-  "pkg-config",
-  "gcc"        # needed for wheel builds
+  "pkg-config", 
+  "gcc",        # needed for wheel builds
+  "gfortran",   # For scipy compilation
+  "meson"       # For building scipy
 ]
 
 [phases.install]
