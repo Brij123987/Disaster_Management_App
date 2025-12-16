@@ -11,6 +11,7 @@ cmds = [
   "python3.10 -m venv /opt/venv",
   ". /opt/venv/bin/activate",
   "pip install --upgrade pip",
+  "ls -al",  # List the files in the current directory
   "pip install -r requirements.txt"
 ]
 
