@@ -42,7 +42,7 @@ DEBUG = False
 CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = [
-    "disastermanagementapp-production.up.railway.app","localhost","127.0.0.1"
+    "https://disaster-management-app-4.onrender.com","localhost","127.0.0.1"
 ]
 
 CSRF_TRUSTED_ORIGINS = ["https://disaster-management-app-4.onrender.com"]
