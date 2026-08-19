@@ -45,7 +45,7 @@ ALLOWED_HOSTS = [
     "disastermanagementapp-production.up.railway.app","localhost","127.0.0.1"
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://disastermanagementapp-production.up.railway.app"]
+CSRF_TRUSTED_ORIGINS = ["https://disaster-management-app-4.onrender.com"]
 
 # CORS_ALLOWED_ORIGINS = [
 #     "https://hackathonproject-42se--5173--2e6e5e13.local-credentialless.webcontainer.io", 
