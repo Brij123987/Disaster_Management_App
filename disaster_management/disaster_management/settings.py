@@ -206,6 +206,10 @@ LOGGING = {
         },
     },
     'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'error_formatter',
+        },
         'error_file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
@@ -215,7 +219,7 @@ LOGGING = {
     },
     'loggers': {
         'custom_logger': {
-            'handlers': ['error_file'],
+            'handlers': ['console', 'error_file'],
             'level': 'ERROR',
             'propagate': False,
         },
